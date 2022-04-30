@@ -14,9 +14,9 @@ abstract class AbstractTest<T : Activity>{
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
 
     /*
-        Assumes id to be constants based on this
-        https://stackoverflow.com/questions/64951792/are-integer-value-of-view-ids-are-always-constant-in-android
-        so it should not be a problem to hold references to ids
+       Assumes id to be constants based on this
+       https://stackoverflow.com/questions/64951792/are-integer-value-of-view-ids-are-always-constant-in-android
+       so it should not be a problem to hold references to ids
     */
     protected fun getViewId(idString: String) : Int {
         var id = 0;
@@ -28,6 +28,7 @@ abstract class AbstractTest<T : Activity>{
 
     /**
      * Use this method to make assertions directly on views.
+     *
      * Prefer using espresso.ViewAssertion if possible (ex: onView(...).check {...})
      *
      * Don't hold direct references to views outside this method for the same reason
@@ -43,6 +44,7 @@ abstract class AbstractTest<T : Activity>{
 
     /**
      * Use this method to make assertions on the player.
+     *
      * Don't hold direct references to player outside this method for the same reason
      * you should not hold direct references to activity outside of activityRule.scenario.onActivity,
      * that is, because activity can be recreated at anytime during state transitions.
@@ -54,6 +56,9 @@ abstract class AbstractTest<T : Activity>{
     }
 
     /**
+     * Assert the existence of a particular view, and that it is from class V,
+     * then returns the V view.
+     *
      * On classes that implement AbstractTest prefer using assertView instead.
      *
      * Don't use this method outside of activityRule.scenario.onActivity.
@@ -63,7 +68,7 @@ abstract class AbstractTest<T : Activity>{
      * that is, because activity can be recreated at anytime during state transitions.
      */
     /* this method had to be protected instead of private because it had to have the same level
-     as its consumers because of inline, but it should be thought as being private */
+     as its consumers, because of inline, but it should be thought as being private */
     protected inline fun <reified V: View> findExistingViewById(activity: Activity, id: Int): V {
        val view: View? = activity.findViewById(id)
 
