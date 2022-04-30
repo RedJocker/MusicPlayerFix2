@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity(), MusicPlayable {
     stopButton.setOnClickListener {
       println("stop clicked")
       player.stop()
+      player.prepare()
     }
   }
 }
