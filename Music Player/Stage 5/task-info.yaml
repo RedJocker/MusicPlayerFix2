@@ -1,0 +1,28 @@
+type: edu
+files:
+- name: build.gradle
+  visible: true
+- name: src/main/AndroidManifest.xml
+  visible: true
+- name: src/main/res/values/styles.xml
+  visible: true
+- name: src/main/res/values/strings.xml
+  visible: true
+- name: src/main/res/values/colors.xml
+  visible: true
+- name: src/main/res/layout/activity_main.xml
+  visible: true
+- name: src/main/res/layout/fragment_song.xml
+  visible: true
+- name: src/androidTest/java/org/hyperskill/musicplayer/AbstractTest.kt
+  visible: false
+- name: src/androidTest/java/org/hyperskill/musicplayer/AndroidEduTestRunner.kt
+  visible: false
+- name: src/androidTest/java/org/hyperskill/musicplayer/Stage5Test.kt
+  visible: false
+- name: src/main/java/org/hyperskill/musicplayer/MainActivity.kt
+  visible: true
+- name: src/main/java/org/hyperskill/musicplayer/SongFragment.kt
+  visible: true
+- name: src/main/java/org/hyperskill/musicplayer/Timer.kt
+  visible: true
