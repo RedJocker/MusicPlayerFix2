@@ -1,19 +1,20 @@
 package org.hyperskill.musicplayer
 
 import android.app.Activity
+import android.content.Context
 import android.view.View
 
-abstract class AbstractUnitTest<T : Activity>(private val activityClass: Class<T>) {
+abstract class AbstractUnitTest<T : Activity>{
 
-    protected lateinit var activity: T
-
-    protected fun identifier(id: String) : Int {
-        return activity.resources.getIdentifier(id, "id", activity.packageName)
+    protected fun Activity.id(idString: String) : Int {
+        return resources.getIdentifier(idString, "id", packageName)
     }
 
-    protected fun <T: View> find(id: Int) : T = activity.findViewById(id)
+    protected fun Context.id(id: String) : Int {
+        return resources.getIdentifier(id, "id", packageName)
+    }
 
-    protected fun <T: View> find(id: String) : T = activity.findViewById(identifier(id))
+    protected fun <V: View> Activity.find(idString: String) : V = findViewById(id(idString))
 
-    protected fun <T: View> View.find(id: String): T = findViewById(identifier(id))
+    protected fun <T: View> View.find(idString: String): T = findViewById(context.id(idString))
 }
