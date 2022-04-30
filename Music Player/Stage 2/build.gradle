@@ -2,31 +2,35 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-  compileSdkVersion 31
+  compileSdkVersion hs.android.compileSdkVersion
 
   defaultConfig {
+
     applicationId "org.hyperskill.musicplayer"
-    minSdkVersion 21
-    targetSdkVersion 31
+    minSdkVersion hs.android.minSdkVersion
+    targetSdkVersion hs.android.targetSdkVersion
     versionCode 1
-    versionName "1.0"
-    testInstrumentationRunner "org.hyperskill.musicplayer.AndroidEduTestRunner"
+    versionName '1.0'
   }
-  buildTypes {
-    release {
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-    }
+
+  buildFeatures {
+    viewBinding true
   }
 }
 
 dependencies {
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-  implementation 'androidx.core:core-ktx:1.7.0'
-  implementation 'androidx.appcompat:appcompat:1.4.1'
-  testImplementation 'junit:junit:4.12'
-  testImplementation 'org.robolectric:robolectric:3.8'
-  androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-  androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-  androidTestImplementation 'androidx.test:rules:1.4.0'
+  def kotlinVersion = hs.android.kotlinVersion
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+
+  def coreKtx = hs.android.lib.coreKtx
+  implementation "androidx.core:core-ktx:$coreKtx"
+
+  def appCompat = hs.android.lib.appCompat
+  implementation "androidx.appcompat:appcompat:$appCompat"
+
+  def constraintLayout = hs.android.lib.constraintLayout
+  implementation "androidx.constraintlayout:constraintlayout:$constraintLayout"
+
+  def material = hs.android.lib.material
+  implementation "com.google.android.material:material:$material"
 }
