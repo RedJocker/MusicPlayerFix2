@@ -15,14 +15,29 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class Stage2Test: AbstractTest<MainActivity>() {
 
+    private val currentTimeTvId: Int by lazy { getViewId("currentTimeTextView") }
     private val playPauseButtonId: Int by lazy { getViewId("playPauseButton") }
-    private val stopButtonId: Int by lazy { getViewId("stopButton") }
+    private val seekBarId: Int by lazy { getViewId("seekBar") }
     private val songTitleId: Int by lazy { getViewId("songTitleTextView") }
     private val songArtistId: Int by lazy { getViewId("songArtistTextView") }
+    private val stopButtonId: Int by lazy { getViewId("stopButton") }
     private val totalTimeViewId: Int by lazy { getViewId("totalTimeTextView") }
-    private val currentTimeViewId: Int by lazy { getViewId("currentTimeTextView") }
-    private val seekBarId: Int by lazy { getViewId("seekBar") }
 
+    private val currentTimeTvInteraction: ViewInteraction by lazy {
+        onView(withId(currentTimeTvId))
+    }
+    private val playPauseButtonInteraction: ViewInteraction by lazy {
+        onView(withId(playPauseButtonId))
+    }
+    private val seekBarInteraction: ViewInteraction by lazy {
+        onView(withId(playPauseButtonId))
+    }
+    private val stopButtonInteraction: ViewInteraction by lazy {
+        onView(withId(stopButtonId))
+    }
+    private val totalTimeTvInteraction: ViewInteraction by lazy {
+        onView(withId(totalTimeViewId))
+    }
 
     @Test
     fun checkIsTotalTimeViewExist() {
@@ -31,7 +46,7 @@ class Stage2Test: AbstractTest<MainActivity>() {
 
     @Test
     fun checkIsCurrentTimeViewExist() {
-        assertView<TextView>(currentTimeViewId) {}
+        assertView<TextView>(currentTimeTvId) {}
     }
 
     @Test
@@ -45,7 +60,6 @@ class Stage2Test: AbstractTest<MainActivity>() {
         val messageMax = "seekBar should have max value matching the song duration in seconds"
         val expectedInitialProgress = 0
         val expectedInitialMax = 214
-        val seekBarInteraction: ViewInteraction = onView(withId(seekBarId))
 
         seekBarInteraction.check { view, _ ->
             val seekBar = (view as SeekBar)
@@ -60,21 +74,17 @@ class Stage2Test: AbstractTest<MainActivity>() {
 
     @Test
     fun checkTimeTextViewsInitialValues() {
-
         val messageInitialCurrentTimeView = "currentTimeTextView should display the initial value"
         val messageInitialTotalTimeView = "totalTimeTextView should display the music total duration"
 
-        val currentTimeViewInteraction: ViewInteraction = onView(withId(currentTimeViewId))
-        val totalTimeViewInteraction: ViewInteraction = onView(withId(totalTimeViewId))
-
-        currentTimeViewInteraction.check { view, _ ->
+        currentTimeTvInteraction.check { view, _ ->
             val currentTimeTextView = view as TextView
             val expectedInitialTime = "00:00"
             val actualInitialTime = currentTimeTextView.text.toString()
             assertEquals(messageInitialCurrentTimeView, expectedInitialTime, actualInitialTime)
         }
 
-        totalTimeViewInteraction.check { view, _ ->
+        totalTimeTvInteraction.check { view, _ ->
             val totalTimeTextView = view as TextView
             val expectedInitialTime = "03:34"
             val actualInitialTime = totalTimeTextView.text.toString()
@@ -90,7 +100,6 @@ class Stage2Test: AbstractTest<MainActivity>() {
 
         val seekBarInteraction: ViewInteraction = onView(withId(seekBarId))
         val playPauseButtonInteraction: ViewInteraction = onView(withId(playPauseButtonId))
-        val stopInteraction: ViewInteraction = onView(withId(stopButtonId))
 
         seekBarInteraction.check { view, _ ->
             val expectedProgress = 0
@@ -111,23 +120,21 @@ class Stage2Test: AbstractTest<MainActivity>() {
                 assertEquals(messageMatchProgress, playerDuration, actualProgress2)
             }
         }
-        stopInteraction.perform(click())
+        stopButtonInteraction.perform(click())
     }
 
     @Test
     fun checkStateAfterSeekBarTrackingTouch() {
         val seekBarInteraction: ViewInteraction = onView(withId(seekBarId))
-        val currentTimeInteraction = onView(withId(currentTimeViewId))
         val playPauseButtonInteraction: ViewInteraction = onView(withId(playPauseButtonId))
         val totalTimeViewInteraction: ViewInteraction = onView(withId(totalTimeViewId))
-        val stopInteraction: ViewInteraction = onView(withId(stopButtonId))
         val progressSetByTest = 71
 
         seekBarInteraction.perform(clickSeekBarAction(progressSetByTest))
 
         val messageCurrentTextViewChangeExpected =
             "Changing the seekBar progress should change the currentTimeTextView"
-        currentTimeInteraction.check { view, _ ->
+        currentTimeTvInteraction.check { view, _ ->
             val actualCurrentTime = (view as TextView).text
             val expectedCurrentTime = progressSetByTest.secondsToTimeString()
             assertEquals(messageCurrentTextViewChangeExpected, expectedCurrentTime, actualCurrentTime)
@@ -171,10 +178,10 @@ class Stage2Test: AbstractTest<MainActivity>() {
         }
 
 
-        stopInteraction.perform(click())
+        stopButtonInteraction.perform(click())
         val messageCurrentTextViewChangeAfterStop =
             "After clicking on stopButton currentTimeTextView should change back to initial value"
-        currentTimeInteraction.check { view, _ ->
+        currentTimeTvInteraction.check { view, _ ->
             val actualCurrentTime = (view as TextView).text
             val expectedCurrentTime = "00:00"
             assertEquals(messageCurrentTextViewChangeAfterStop, expectedCurrentTime, actualCurrentTime)
@@ -184,19 +191,17 @@ class Stage2Test: AbstractTest<MainActivity>() {
     @Test
     fun checkSeekBarAfterStop() {
         val seekBarInteraction: ViewInteraction = onView(withId(seekBarId))
-        val currentTimeInteraction = onView(withId(currentTimeViewId))
         val playPauseButtonInteraction: ViewInteraction = onView(withId(playPauseButtonId))
-        val stopInteraction: ViewInteraction = onView(withId(stopButtonId))
         val progressSetByTest = 122
 
         playPauseButtonInteraction.perform(click())
-        stopInteraction.perform(click())
+        stopButtonInteraction.perform(click())
 
         seekBarInteraction.perform(clickSeekBarAction(progressSetByTest))
 
         val messageCurrentTextViewChangeExpected =
             "After stopButton clicked changing the seekBar progress should change the currentTimeTextView"
-        currentTimeInteraction.check { view, _ ->
+        currentTimeTvInteraction.check { view, _ ->
             val actualCurrentTime = (view as TextView).text
             val expectedCurrentTime = progressSetByTest.secondsToTimeString()
             assertEquals(messageCurrentTextViewChangeExpected, expectedCurrentTime, actualCurrentTime)
