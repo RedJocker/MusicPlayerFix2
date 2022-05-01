@@ -1,6 +1,7 @@
 package org.hyperskill.musicplayer
 
 import android.media.MediaPlayer
+import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.test.espresso.Espresso.onView
@@ -41,18 +42,14 @@ class Stage2Test: AbstractTest<MainActivity>() {
     }
 
     @Test
-    fun checkIsTotalTimeViewExist() {
-        assertView<TextView>(totalTimeViewId) {}
-    }
-
-    @Test
-    fun checkIsCurrentTimeViewExist() {
-        assertView<TextView>(currentTimeTvId) {}
-    }
-
-    @Test
-    fun checkIsSeekbarExist() {
-        assertView<SeekBar>(seekBarId) {}
+    fun checkViewsExist() {
+        assertView<TextView>("currentTimeTextView") {}
+        assertView<ImageButton>("playPauseButton") {}
+        assertView<SeekBar>("seekBar") {}
+        assertView<TextView>("songTitleTextView") {}
+        assertView<TextView>("songArtistTextView") {}
+        assertView<ImageButton>("stopButton") {}
+        assertView<TextView>("totalTimeTextView") {}
     }
 
     @Test
