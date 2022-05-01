@@ -45,9 +45,9 @@ abstract class AbstractTest<T : Activity>{
      * you should not hold direct references to activity outside of activityRule.scenario.onActivity,
      * that is, because activity can be recreated at anytime during state transitions.
      * */
-    protected inline fun <reified V: View> assertView(viewId: Int, crossinline assertion: (V) -> Unit){
+    protected inline fun <reified V: View> assertView(idString: String, crossinline assertion: (V) -> Unit){
         activityRule.scenario.onActivity {  activity ->
-            val view = findExistingViewById<V>(activity, viewId)
+            val view = findViewByString<V>(activity, idString)
             assertion(view)
         }
     }
@@ -79,11 +79,12 @@ abstract class AbstractTest<T : Activity>{
      */
     /* this method had to be protected instead of private because it had to have the same level
      as its consumers, because of inline, but it should be thought as being private */
-    protected inline fun <reified V: View> findExistingViewById(activity: Activity, id: Int): V {
+    protected inline fun <reified V: View> findViewByString(activity: Activity, idString: String): V {
+        val id = getViewId(idString)
         val view: View? = activity.findViewById(id)
 
-        val idNotFoundMessage = "View with id number \"$id\" was not found"
-        val wrongClassMessage = "View with id number \"$id\" is not from expected class. " +
+        val idNotFoundMessage = "View with id  \"$idString\" was not found"
+        val wrongClassMessage = "View with id number \"$idString\" is not from expected class. " +
                 "Expected ${V::class.java.simpleName} found ${view?.javaClass?.simpleName}"
 
         assertNotNull(idNotFoundMessage, view)
