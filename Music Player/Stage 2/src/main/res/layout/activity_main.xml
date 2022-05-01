@@ -6,29 +6,29 @@
     tools:context=".MainActivity">
 
   <TextView
-      android:id="@+id/song_title"
+      android:id="@+id/songTitleTextView"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="title1"
       tools:ignore="HardcodedText"/>
   <TextView
-      android:id="@+id/song_artist"
+      android:id="@+id/songArtistTextView"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="artist1"
       tools:ignore="HardcodedText"/>
   <ImageButton
-      android:id="@+id/play_pause_button"
+      android:id="@+id/playPauseButton"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:src="@drawable/ic_action_play"/>
   <ImageButton
-      android:id="@+id/stop_button"
+      android:id="@+id/stopButton"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:src="@drawable/ic_action_stop"/>
   <LinearLayout
-      android:id="@+id/controller_bar"
+      android:id="@+id/controllerBar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical">
@@ -37,14 +37,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
       <TextView
-          android:id="@+id/current_time_view"
+          android:id="@+id/currentTimeTextView"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_margin="8dp"
           android:text="00:00"/>
 
       <TextView
-          android:id="@+id/total_time_view"
+          android:id="@+id/totalTimeTextView"
           android:layout_width="0dp"
           android:layout_weight="1"
           android:layout_height="wrap_content"
