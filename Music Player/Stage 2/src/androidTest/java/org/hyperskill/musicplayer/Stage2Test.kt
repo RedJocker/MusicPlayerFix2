@@ -41,7 +41,7 @@ class Stage2Test: AbstractTest<MainActivity>() {
 
     @Test
     fun checkIsTotalTimeViewExist() {
-        assertView<TextView>(totalTimeViewId) { R.id.currentTimeTextView}
+        assertView<TextView>(totalTimeViewId) {}
     }
 
     @Test
@@ -95,11 +95,8 @@ class Stage2Test: AbstractTest<MainActivity>() {
     @Test
     fun checkIsSeekbarMoving() {
         val messageStart = "seekBar should start with progress at the beginning"
-        val messageProgressChanges = "Is seekbar progress changing while music playing?"
+        val messageProgressChanges = "Is seekBar progress changing while music playing?"
         val messageMatchProgress = "The progress of seekBar should match `player.currentPosition / 1000`"
-
-        val seekBarInteraction: ViewInteraction = onView(withId(seekBarId))
-        val playPauseButtonInteraction: ViewInteraction = onView(withId(playPauseButtonId))
 
         seekBarInteraction.check { view, _ ->
             val expectedProgress = 0
@@ -125,9 +122,6 @@ class Stage2Test: AbstractTest<MainActivity>() {
 
     @Test
     fun checkStateAfterSeekBarTrackingTouch() {
-        val seekBarInteraction: ViewInteraction = onView(withId(seekBarId))
-        val playPauseButtonInteraction: ViewInteraction = onView(withId(playPauseButtonId))
-        val totalTimeViewInteraction: ViewInteraction = onView(withId(totalTimeViewId))
         val progressSetByTest = 71
 
         seekBarInteraction.perform(clickSeekBarAction(progressSetByTest))
@@ -150,7 +144,7 @@ class Stage2Test: AbstractTest<MainActivity>() {
 
         val messageTotalTimeShouldNotChange =
             "totalTimeTextView should not change text value after seekBar changes"
-        totalTimeViewInteraction.check { view, _ ->
+        totalTimeTvInteraction.check { view, _ ->
             val totalTimeTextView = view as TextView
             val expectedTime = "03:34"
             val actualTime = totalTimeTextView.text.toString()
@@ -190,8 +184,6 @@ class Stage2Test: AbstractTest<MainActivity>() {
 
     @Test
     fun checkSeekBarAfterStop() {
-        val seekBarInteraction: ViewInteraction = onView(withId(seekBarId))
-        val playPauseButtonInteraction: ViewInteraction = onView(withId(playPauseButtonId))
         val progressSetByTest = 122
 
         playPauseButtonInteraction.perform(click())
