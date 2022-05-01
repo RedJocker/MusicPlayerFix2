@@ -22,9 +22,6 @@ class Timer(private val player: MediaPlayer, private val onTick: () -> Unit, pri
 
     private val runnable: Runnable = object: Runnable {
         override fun run() {
-            if(player.currentPosition >= player.duration) {
-                pause()
-            }
             if (running) {
                 onTick()
                 handler.postDelayed(this, 999)
@@ -35,9 +32,6 @@ class Timer(private val player: MediaPlayer, private val onTick: () -> Unit, pri
     fun pause() {
         running = false
         handler.removeCallbacks(runnable)
-    }
-    fun resume() {
-        running = true
     }
     fun start() {
         running = true

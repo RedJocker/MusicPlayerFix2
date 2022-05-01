@@ -59,20 +59,24 @@ class MainActivity : AppCompatActivity(), MusicPlayable {
         }
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
           player.seekTo(seekBar!!.progress * 1000)
-
           timer.start()
-
         }
       })
+
+      player.setOnCompletionListener {
+        it.seekTo(0)
+//        println("onCompletionListener, isPlaying:" + it.isPlaying)
+        timer.stop()
+      }
     }
   }
 
   private fun onTimerTick() {
     runOnUiThread {
       timer.apply {
+//        println("onTimerTick, timeTotalSeconds(): ${timeTotalSeconds()}, timeString: ${timeString()}")
         binding.seekBar.progress = timeTotalSeconds()
         binding.currentTimeTextView.text = timeString()
-        //println("onTimerTick: " + timeString())
       }
     }
   }
@@ -80,8 +84,9 @@ class MainActivity : AppCompatActivity(), MusicPlayable {
   private fun onTimerStop() {
     runOnUiThread {
       timer.apply {
+//        println("onTimerStop, timeTotalSeconds(): ${timeTotalSeconds()}, timeString: ${timeString()}")
         binding.seekBar.progress = 0
-        binding.currentTimeTextView.text = timeString()
+        binding.currentTimeTextView.text = "00:00"
       }
     }
   }
