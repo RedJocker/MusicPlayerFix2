@@ -121,8 +121,7 @@ abstract class AbstractTest<T : Activity>{
 
             val seekBar = view as SeekBar
             val width = seekBar.width - seekBar.paddingLeft - seekBar.paddingRight
-            val progress = if (progress == 0) seekBar.progress.toDouble() else progress.toDouble()
-            val xPosition = (seekBar.paddingLeft + width * progress / seekBar.max).toInt()
+            val xPosition = seekBar.paddingLeft + width * progress / seekBar.max
             val xy = getVisibleLeftTop(seekBar)
             return floatArrayOf(xy[0] + xPosition, xy[1] + 10)
         }

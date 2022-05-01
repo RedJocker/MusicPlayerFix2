@@ -1,5 +1,6 @@
 package org.hyperskill.musicplayer
 
+import android.media.MediaPlayer
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.test.espresso.Espresso.onView
@@ -30,7 +31,7 @@ class Stage2Test: AbstractTest<MainActivity>() {
         onView(withId(playPauseButtonId))
     }
     private val seekBarInteraction: ViewInteraction by lazy {
-        onView(withId(playPauseButtonId))
+        onView(withId(seekBarId))
     }
     private val stopButtonInteraction: ViewInteraction by lazy {
         onView(withId(stopButtonId))
@@ -126,25 +127,26 @@ class Stage2Test: AbstractTest<MainActivity>() {
 
         seekBarInteraction.perform(clickSeekBarAction(progressSetByTest))
 
-        val messageCurrentTextViewChangeExpected =
-            "Changing the seekBar progress should change the currentTimeTextView"
         currentTimeTvInteraction.check { view, _ ->
+            val messageCurrentTextViewChangeExpected =
+                "Changing the seekBar progress should change the currentTimeTextView"
             val actualCurrentTime = (view as TextView).text
             val expectedCurrentTime = progressSetByTest.secondsToTimeString()
             assertEquals(messageCurrentTextViewChangeExpected, expectedCurrentTime, actualCurrentTime)
         }
 
-        val messagePlayerChangeExpected =
-            "Changing the seekBar progress should change the player current position"
         assertPlayer { player ->
+            val messagePlayerChangeExpected =
+                "Changing the seekBar progress should change the player current position"
             val actualCurrentPosition = player.currentPosition
             val expectedCurrentPosition = progressSetByTest * 1000
             assertEquals(messagePlayerChangeExpected, expectedCurrentPosition, actualCurrentPosition)
         }
 
-        val messageTotalTimeShouldNotChange =
-            "totalTimeTextView should not change text value after seekBar changes"
+
         totalTimeTvInteraction.check { view, _ ->
+            val messageTotalTimeShouldNotChange =
+                "totalTimeTextView should not change text value after seekBar changes"
             val totalTimeTextView = view as TextView
             val expectedTime = "03:34"
             val actualTime = totalTimeTextView.text.toString()
@@ -154,16 +156,17 @@ class Stage2Test: AbstractTest<MainActivity>() {
         playPauseButtonInteraction.perform(click())
         Thread.sleep(1800)
 
-        val messageProgressChanges =
-            "After changing the seekBar progress and clicking on playButton, progress should resume based on new value"
-        val messageMatchProgress =
-            "After changing the seekBar progress and clicking on playButton, player should start based on new value"
-
         seekBarInteraction.check { view, _ ->
+            val messageProgressChanges =
+                "After changing the seekBar progress and clicking on playButton, " +
+                        "progress should resume based on new value"
             val actualProgress: Int = (view as SeekBar).progress
             assertTrue(messageProgressChanges, actualProgress > progressSetByTest)
 
             assertPlayer { player ->
+                val messageMatchProgress =
+                    "After changing the seekBar progress and clicking on playButton, " +
+                            "player should start based on new value"
                 val playerDuration = player.currentPosition / 1000
                 val actualProgress2 = view.progress
                 assertTrue(messageMatchProgress, playerDuration > progressSetByTest)
@@ -171,11 +174,11 @@ class Stage2Test: AbstractTest<MainActivity>() {
             }
         }
 
-
         stopButtonInteraction.perform(click())
-        val messageCurrentTextViewChangeAfterStop =
-            "After clicking on stopButton currentTimeTextView should change back to initial value"
+
         currentTimeTvInteraction.check { view, _ ->
+            val messageCurrentTextViewChangeAfterStop =
+                "After clicking on stopButton currentTimeTextView should change back to initial value"
             val actualCurrentTime = (view as TextView).text
             val expectedCurrentTime = "00:00"
             assertEquals(messageCurrentTextViewChangeAfterStop, expectedCurrentTime, actualCurrentTime)
@@ -188,23 +191,86 @@ class Stage2Test: AbstractTest<MainActivity>() {
 
         playPauseButtonInteraction.perform(click())
         stopButtonInteraction.perform(click())
-
         seekBarInteraction.perform(clickSeekBarAction(progressSetByTest))
 
-        val messageCurrentTextViewChangeExpected =
-            "After stopButton clicked changing the seekBar progress should change the currentTimeTextView"
         currentTimeTvInteraction.check { view, _ ->
+            val messageCurrentTextViewChangeExpected =
+                "After stopButton clicked changing the seekBar progress should change the currentTimeTextView"
             val actualCurrentTime = (view as TextView).text
             val expectedCurrentTime = progressSetByTest.secondsToTimeString()
             assertEquals(messageCurrentTextViewChangeExpected, expectedCurrentTime, actualCurrentTime)
         }
 
-        val messagePlayerChangeExpected =
-            "After stopButton clicked changing the seekBar progress should change the player current position"
         assertPlayer { player ->
+            val messagePlayerChangeExpected =
+                "After stopButton clicked changing the seekBar progress should change the player current position"
             val actualCurrentPosition = player.currentPosition
             val expectedCurrentPosition = progressSetByTest * 1000
             assertEquals(messagePlayerChangeExpected, expectedCurrentPosition, actualCurrentPosition)
         }
+    }
+
+    @Test
+    fun checkOnMusicEndState() {
+        val getNearEndMusic: MediaPlayer.() -> Int = { (this.duration - 1000) / 1000 }
+
+        var nearEndMusic = 0
+        assertPlayer { nearEndMusic = it.getNearEndMusic() }
+
+        seekBarInteraction.perform(clickSeekBarAction(nearEndMusic))
+
+        currentTimeTvInteraction.check { view, _ ->
+            val messageCurrentTimeChangeExpected =
+                "Changing the seekBar progress should change the currentTimeTextView"
+            val actualCurrentTime = (view as TextView).text
+            val expectedCurrentTime = nearEndMusic.secondsToTimeString()
+            assertEquals(messageCurrentTimeChangeExpected, expectedCurrentTime, actualCurrentTime)
+        }
+
+        assertPlayer { player ->
+            val messagePlayerChangeExpected =
+                "Changing the seekBar progress should change the player current position"
+            val actualCurrentPosition = player.currentPosition
+            val expectedCurrentPosition = nearEndMusic * 1000
+            assertEquals(messagePlayerChangeExpected, expectedCurrentPosition, actualCurrentPosition)
+        }
+
+        playPauseButtonInteraction.perform(click())
+        Thread.sleep(3000)
+
+        currentTimeTvInteraction.check { view, _ ->
+            val messageCurrentTimeChangeExpected =
+                "currentTimeTextView text should reset on music end"
+            val actualCurrentTime = (view as TextView).text
+            val expectedCurrentTime = "00:00"
+            assertEquals(messageCurrentTimeChangeExpected, expectedCurrentTime, actualCurrentTime)
+        }
+
+        assertPlayer { player ->
+            val messagePlayerChangeExpected =
+                "Getting to the end of music should stop the player"
+            val expectedIsPlaying = false
+            val actualIsPlaying = player.isPlaying
+            assertEquals(messagePlayerChangeExpected, expectedIsPlaying, actualIsPlaying)
+        }
+
+        assertPlayer { player ->
+            val messagePlayerChangeExpected =
+                "Getting to the end of music should reset player time position"
+            val expectedPlayerPosition = 0
+            val actualPlayerPosition = player.currentPosition
+            assertEquals(messagePlayerChangeExpected, expectedPlayerPosition, actualPlayerPosition)
+        }
+
+        playPauseButtonInteraction.perform(click())
+
+        assertPlayer { player ->
+            val messagePlayerChangeExpected =
+                "It should be possible to play again a music that has reached end"
+            val expectedIsPlaying = true
+            val actualIsPlaying = player.isPlaying
+            assertEquals(messagePlayerChangeExpected, expectedIsPlaying, actualIsPlaying)
+        }
+        stopButtonInteraction.perform(click())
     }
 }
