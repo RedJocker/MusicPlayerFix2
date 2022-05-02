@@ -38,6 +38,7 @@ abstract class AbstractTest<T : Activity>{
 
     /**
      * Use this method to make assertions directly on views.
+     * Returns the view id:Int for convenience
      *
      * Prefer using espresso.ViewAssertion if possible (ex: onView(...).check {...})
      *
@@ -45,11 +46,12 @@ abstract class AbstractTest<T : Activity>{
      * you should not hold direct references to activity outside of activityRule.scenario.onActivity,
      * that is, because activity can be recreated at anytime during state transitions.
      * */
-    protected inline fun <reified V: View> assertView(idString: String, crossinline assertion: (V) -> Unit){
+    protected inline fun <reified V: View> assertView(idString: String, crossinline assertion: (V) -> Unit): Int {
         activityRule.scenario.onActivity {  activity ->
             val view = findViewByString<V>(activity, idString)
             assertion(view)
         }
+        return getViewId(idString)
     }
 
     /**
