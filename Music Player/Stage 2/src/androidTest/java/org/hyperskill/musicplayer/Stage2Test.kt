@@ -16,40 +16,32 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class Stage2Test: AbstractTest<MainActivity>() {
-
-    private val currentTimeTvId: Int by lazy { getViewId("currentTimeTextView") }
-    private val playPauseButtonId: Int by lazy { getViewId("playPauseButton") }
-    private val seekBarId: Int by lazy { getViewId("seekBar") }
-    private val songTitleId: Int by lazy { getViewId("songTitleTextView") }
-    private val songArtistId: Int by lazy { getViewId("songArtistTextView") }
-    private val stopButtonId: Int by lazy { getViewId("stopButton") }
-    private val totalTimeViewId: Int by lazy { getViewId("totalTimeTextView") }
-
+    
     private val currentTimeTvInteraction: ViewInteraction by lazy {
-        onView(withId(currentTimeTvId))
+        val id: Int = assertView<TextView>("currentTimeTextView") {}
+        onView(withId(id))
     }
     private val playPauseButtonInteraction: ViewInteraction by lazy {
-        onView(withId(playPauseButtonId))
+        val id: Int = assertView<ImageButton>("playPauseButton") {}
+        onView(withId(id))
     }
     private val seekBarInteraction: ViewInteraction by lazy {
-        onView(withId(seekBarId))
+        val id: Int = assertView<SeekBar>("seekBar") {}
+        onView(withId(id))
     }
     private val stopButtonInteraction: ViewInteraction by lazy {
-        onView(withId(stopButtonId))
+        val id: Int = assertView<ImageButton>("stopButton") {}
+        onView(withId(id))
     }
     private val totalTimeTvInteraction: ViewInteraction by lazy {
-        onView(withId(totalTimeViewId))
+        val id: Int = assertView<TextView>("totalTimeTextView") {}
+        onView(withId(id))
     }
 
     @Test
     fun checkViewsExist() {
-        assertView<TextView>("currentTimeTextView") {}
-        assertView<ImageButton>("playPauseButton") {}
-        assertView<SeekBar>("seekBar") {}
         assertView<TextView>("songTitleTextView") {}
         assertView<TextView>("songArtistTextView") {}
-        assertView<ImageButton>("stopButton") {}
-        assertView<TextView>("totalTimeTextView") {}
     }
 
     @Test
