@@ -5,28 +5,33 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
 
-class MainActivity : AppCompatActivity(), MusicPlayable {
+class MainActivity : AppCompatActivity() {
 
-  override lateinit var player: MediaPlayer
+  val player: Player by lazy {
+    Player(MediaPlayer.create(this, R.raw.wisdom))
+  }
+  private val playPauseButton by lazy {
+    findViewById<ImageButton>(R.id.playPauseButton)
+  }
+  private val stopButton by lazy {
+    findViewById<ImageButton>(R.id.stopButton)
+  }
+
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    player = MediaPlayer.create(this, R.raw.wisdom)
-    val playPauseButton = findViewById<ImageButton>(R.id.play_pause_button)
-    playPauseButton.setOnClickListener {
-      println("play_pause clicked")
-      if (player.isPlaying) {
-        player.pause()
-      } else {
-        player.start()
-      }
-    }
-    val stopButton = findViewById<ImageButton>(R.id.stop_button)
-    stopButton.setOnClickListener {
-      println("stop clicked")
-      player.stop()
-      player.prepare()
-    }
+    initListeners()
+  }
+
+  fun initListeners() {
+    player
+    playPauseButton.setOnClickListener(player::playPause)
+    stopButton.setOnClickListener(player::stop)
   }
 }
+
+
+
+
+
