@@ -1,8 +1,10 @@
 package org.hyperskill.musicplayer
 
+import android.annotation.SuppressLint
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.SystemClock
 import android.widget.SeekBar
 import org.hyperskill.musicplayer.databinding.ActivityMainBinding
 
@@ -22,7 +24,7 @@ class MainActivity : AppCompatActivity(), MusicPlayable {
     player = MediaPlayer.create(this, R.raw.wisdom)
     timer = Timer(player, ::onTimerTick , ::onTimerStop)
 
-    binding.totalTimeTextView.text = Timer.timeString(player.duration)
+    binding.totalTimeTv.text = Timer.timeString(player.duration)
     binding.seekBar.max = player.duration / 1000
 
     bindListeners()
@@ -51,7 +53,7 @@ class MainActivity : AppCompatActivity(), MusicPlayable {
       seekBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
           if(fromUser) {
-            binding.currentTimeTextView.text = Timer.timeString(progress * 1000)
+            binding.currentTimeTv.text = Timer.timeString(progress * 1000)
           }
         }
         override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -65,18 +67,19 @@ class MainActivity : AppCompatActivity(), MusicPlayable {
 
       player.setOnCompletionListener {
         it.seekTo(0)
-//        println("onCompletionListener, isPlaying:" + it.isPlaying)
+        println("onCompletionListener, isPlaying:" + it.isPlaying)
         timer.stop()
       }
     }
   }
 
+
   private fun onTimerTick() {
     runOnUiThread {
       timer.apply {
-//        println("onTimerTick, timeTotalSeconds(): ${timeTotalSeconds()}, timeString: ${timeString()}")
+        println("onTimerTick, timeTotalSeconds(): ${timeTotalSeconds()}, timeString: ${timeString()}, player.currentPosition: ${player.currentPosition}")
         binding.seekBar.progress = timeTotalSeconds()
-        binding.currentTimeTextView.text = timeString()
+        binding.currentTimeTv.text = timeString()
       }
     }
   }
@@ -84,9 +87,9 @@ class MainActivity : AppCompatActivity(), MusicPlayable {
   private fun onTimerStop() {
     runOnUiThread {
       timer.apply {
-//        println("onTimerStop, timeTotalSeconds(): ${timeTotalSeconds()}, timeString: ${timeString()}")
+        println("onTimerStop, timeTotalSeconds(): ${timeTotalSeconds()}, timeString: ${timeString()}")
         binding.seekBar.progress = 0
-        binding.currentTimeTextView.text = "00:00"
+        binding.currentTimeTv.text = "00:00"
       }
     }
   }

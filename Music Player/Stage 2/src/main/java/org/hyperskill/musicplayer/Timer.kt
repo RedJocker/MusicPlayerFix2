@@ -24,7 +24,7 @@ class Timer(private val player: MediaPlayer, private val onTick: () -> Unit, pri
         override fun run() {
             if (running) {
                 onTick()
-                handler.postDelayed(this, 999)
+                handler.postDelayed(this, 1000)
             }
         }
     }

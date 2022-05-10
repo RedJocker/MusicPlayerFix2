@@ -18,7 +18,7 @@ import org.junit.runner.RunWith
 class Stage2Test: AbstractTest<MainActivity>() {
     
     private val currentTimeTvInteraction: ViewInteraction by lazy {
-        val id: Int = assertView<TextView>("currentTimeTextView") {}
+        val id: Int = assertView<TextView>("currentTimeTv") {}
         onView(withId(id))
     }
     private val playPauseButtonInteraction: ViewInteraction by lazy {
@@ -34,14 +34,14 @@ class Stage2Test: AbstractTest<MainActivity>() {
         onView(withId(id))
     }
     private val totalTimeTvInteraction: ViewInteraction by lazy {
-        val id: Int = assertView<TextView>("totalTimeTextView") {}
+        val id: Int = assertView<TextView>("totalTimeTv") {}
         onView(withId(id))
     }
 
     @Test
     fun checkViewsExist() {
-        assertView<TextView>("songTitleTextView") {}
-        assertView<TextView>("songArtistTextView") {}
+        assertView<TextView>("songTitleTv") {}
+        assertView<TextView>("songArtistTv") {}
     }
 
     @Test
@@ -64,20 +64,20 @@ class Stage2Test: AbstractTest<MainActivity>() {
 
     @Test
     fun checkTimeTextViewsInitialValues() {
-        val messageInitialCurrentTimeView = "currentTimeTextView should display the initial value"
-        val messageInitialTotalTimeView = "totalTimeTextView should display the music total duration"
+        val messageInitialCurrentTimeView = "currentTimeTv should display the initial value"
+        val messageInitialTotalTimeView = "totalTimeTv should display the music total duration"
 
         currentTimeTvInteraction.check { view, _ ->
-            val currentTimeTextView = view as TextView
+            val currentTimeTv = view as TextView
             val expectedInitialTime = "00:00"
-            val actualInitialTime = currentTimeTextView.text.toString()
+            val actualInitialTime = currentTimeTv.text.toString()
             assertEquals(messageInitialCurrentTimeView, expectedInitialTime, actualInitialTime)
         }
 
         totalTimeTvInteraction.check { view, _ ->
-            val totalTimeTextView = view as TextView
+            val totalTimeTv = view as TextView
             val expectedInitialTime = "03:34"
-            val actualInitialTime = totalTimeTextView.text.toString()
+            val actualInitialTime = totalTimeTv.text.toString()
             assertEquals(messageInitialTotalTimeView, expectedInitialTime, actualInitialTime)
         }
     }
@@ -117,11 +117,11 @@ class Stage2Test: AbstractTest<MainActivity>() {
         seekBarInteraction.perform(clickSeekBarAction(progressSetByTest))
 
         currentTimeTvInteraction.check { view, _ ->
-            val messageCurrentTextViewChangeExpected =
-                "Changing the seekBar progress should change the currentTimeTextView"
+            val messageCurrentTvChangeExpected =
+                "Changing the seekBar progress should change the currentTimeTv"
             val actualCurrentTime = (view as TextView).text
             val expectedCurrentTime = progressSetByTest.secondsToTimeString()
-            assertEquals(messageCurrentTextViewChangeExpected, expectedCurrentTime, actualCurrentTime)
+            assertEquals(messageCurrentTvChangeExpected, expectedCurrentTime, actualCurrentTime)
         }
 
         assertPlayer { player ->
@@ -135,10 +135,10 @@ class Stage2Test: AbstractTest<MainActivity>() {
 
         totalTimeTvInteraction.check { view, _ ->
             val messageTotalTimeShouldNotChange =
-                "totalTimeTextView should not change text value after seekBar changes"
-            val totalTimeTextView = view as TextView
+                "totalTimeTv should not change text value after seekBar changes"
+            val totalTimeTv = view as TextView
             val expectedTime = "03:34"
-            val actualTime = totalTimeTextView.text.toString()
+            val actualTime = totalTimeTv.text.toString()
             assertEquals(messageTotalTimeShouldNotChange, expectedTime, actualTime)
         }
 
@@ -166,11 +166,11 @@ class Stage2Test: AbstractTest<MainActivity>() {
         stopButtonInteraction.perform(click())
 
         currentTimeTvInteraction.check { view, _ ->
-            val messageCurrentTextViewChangeAfterStop =
-                "After clicking on stopButton currentTimeTextView should change back to initial value"
+            val messageCurrentTvChangeAfterStop =
+                "After clicking on stopButton currentTimeTv should change back to initial value"
             val actualCurrentTime = (view as TextView).text
             val expectedCurrentTime = "00:00"
-            assertEquals(messageCurrentTextViewChangeAfterStop, expectedCurrentTime, actualCurrentTime)
+            assertEquals(messageCurrentTvChangeAfterStop, expectedCurrentTime, actualCurrentTime)
         }
     }
 
@@ -183,11 +183,11 @@ class Stage2Test: AbstractTest<MainActivity>() {
         seekBarInteraction.perform(clickSeekBarAction(progressSetByTest))
 
         currentTimeTvInteraction.check { view, _ ->
-            val messageCurrentTextViewChangeExpected =
-                "After stopButton clicked changing the seekBar progress should change the currentTimeTextView"
+            val messageCurrentTvChangeExpected =
+                "After stopButton clicked changing the seekBar progress should change the currentTimeTv"
             val actualCurrentTime = (view as TextView).text
             val expectedCurrentTime = progressSetByTest.secondsToTimeString()
-            assertEquals(messageCurrentTextViewChangeExpected, expectedCurrentTime, actualCurrentTime)
+            assertEquals(messageCurrentTvChangeExpected, expectedCurrentTime, actualCurrentTime)
         }
 
         assertPlayer { player ->
@@ -210,7 +210,7 @@ class Stage2Test: AbstractTest<MainActivity>() {
 
         currentTimeTvInteraction.check { view, _ ->
             val messageCurrentTimeChangeExpected =
-                "Changing the seekBar progress should change the currentTimeTextView"
+                "Changing the seekBar progress should change the currentTimeTv"
             val actualCurrentTime = (view as TextView).text
             val expectedCurrentTime = nearEndMusic.secondsToTimeString()
             assertEquals(messageCurrentTimeChangeExpected, expectedCurrentTime, actualCurrentTime)
@@ -229,7 +229,7 @@ class Stage2Test: AbstractTest<MainActivity>() {
 
         currentTimeTvInteraction.check { view, _ ->
             val messageCurrentTimeChangeExpected =
-                "currentTimeTextView text should reset on music end"
+                "currentTimeTv text should reset on music end"
             val actualCurrentTime = (view as TextView).text
             val expectedCurrentTime = "00:00"
             assertEquals(messageCurrentTimeChangeExpected, expectedCurrentTime, actualCurrentTime)
