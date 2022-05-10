@@ -6,13 +6,13 @@
     tools:context=".MainActivity">
 
   <TextView
-      android:id="@+id/songTitle"
+      android:id="@+id/songTitleTv"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="title1"
       tools:ignore="HardcodedText"/>
   <TextView
-      android:id="@+id/songArtist"
+      android:id="@+id/songArtistTv"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="artist1"
