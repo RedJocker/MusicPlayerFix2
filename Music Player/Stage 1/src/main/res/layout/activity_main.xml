@@ -6,24 +6,24 @@
     tools:context=".MainActivity">
 
   <TextView
-      android:id="@+id/song_title"
+      android:id="@+id/songTitle"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="title1"
       tools:ignore="HardcodedText"/>
   <TextView
-      android:id="@+id/song_artist"
+      android:id="@+id/songArtist"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="artist1"
       tools:ignore="HardcodedText"/>
   <ImageButton
-      android:id="@+id/play_pause_button"
+      android:id="@+id/playPauseButton"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:src="@drawable/ic_action_play"/>
   <ImageButton
-      android:id="@+id/stop_button"
+      android:id="@+id/stopButton"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:src="@drawable/ic_action_stop"/>
