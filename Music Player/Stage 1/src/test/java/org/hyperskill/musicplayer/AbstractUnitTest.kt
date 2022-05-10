@@ -23,7 +23,11 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
 
     protected val activity : Activity by lazy {
         CustomMediaPlayerShadow.setCreateListener(::onMediaPlayerCreated)
-        activityController.setup().get()
+        try {
+            activityController.setup().get()
+        } catch (ex: Exception) {
+            throw AssertionError("Exception, test failed on activity creation with $ex\n${ex.stackTraceToString()}")
+        }
     }
 
     protected val shadowActivity: ShadowActivity by lazy {
@@ -57,6 +61,20 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
     }
 
     /**
+     * Decorate your test code with this method to ensure better error messages displayed
+     * when tests are run with check button and exceptions are thrown by user implementation.
+     *
+     * Returns the result of the last expression on the code block for convenience
+     */
+    fun testActivity(testCodeBlock: () -> Unit) {
+        try {
+            testCodeBlock()
+        } catch (ex: Exception) {
+            throw AssertionError("Exception. Test failed on activity execution with $ex\n${ex.stackTraceToString()}")
+        }
+    }
+
+    /**
      * Use this method to find views.
      *
      * The view existence will be assert before being returned
@@ -76,13 +94,14 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
     }
 
     /**
-     * Use this method to perform clicks. It will also advance the clock 500 milliseconds and run
+     * Use this method to perform clicks. It will also advance the clock millis milliseconds and run
      * enqueued Runnable scheduled to run on main looper in that timeframe.
+     * Default value for millis is 500
      *
-     * Internally it calls performClick() and shadowLooper.idleFor(Duration.ofMillis(500))
+     * Internally it calls performClick() and shadowLooper.idleFor(millis)
      */
-    protected fun View.clickAndRun(){
+    protected fun View.clickAndRun(millis: Long = 500){
         this.performClick()
-        shadowLooper.idleFor(Duration.ofMillis(500))
+        shadowLooper.idleFor(Duration.ofMillis(millis))
     }
 }

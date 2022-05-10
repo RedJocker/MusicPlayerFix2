@@ -6,7 +6,10 @@ import android.view.View
 class Player(val player: MediaPlayer) {
 
     init {
-        player.setOnCompletionListener { println("completed") }
+        player.setOnCompletionListener {
+            println("completed")
+            player.seekTo(0)
+        }
     }
 
     fun playPause(view: View) {
