@@ -205,7 +205,7 @@ class Stage2UnitTest : AbstractUnitTest<MainActivity>(MainActivity::class.java){
             // total time elapsed = 20_200
 
             val messageCurrentTimeAfterResume =
-                "The currentTimeTv should display resume playing after " +
+                "The currentTimeTv should resume displaying current time after " +
                         "playPauseButton click while the song was paused"
             val expectedCurrentTimeAfterResume = "00:20"
             val actualCurrentTimeAfterResume =  currentTimeTv.text.toString()
@@ -226,6 +226,81 @@ class Stage2UnitTest : AbstractUnitTest<MainActivity>(MainActivity::class.java){
 
     @Test
     fun checkStateAfterStop() {
+        testActivity {
+            activity
+            playPauseButton
+            stopButton
+            currentTimeTv
+            seekBar
+            totalTimeTv
+
+            playPauseButton.clickAndRun(119_200)
+            // total time elapsed = 119_200 milliseconds
+
+            val messageCurrentTimeAfterPlay =
+                "The currentTimeTv should display the playing time of the song after clicking playPauseButton"
+            val expectedCurrentTimeAfterPlay = "01:59"
+            val actualCurrentTimeAfterPlay =  currentTimeTv.text.toString()
+            assertEquals(messageCurrentTimeAfterPlay, expectedCurrentTimeAfterPlay, actualCurrentTimeAfterPlay)
+
+            val messageSeekBarAfterPlay =
+                "The seekBar position should track the current position of the song after clicking playPauseButton"
+            val expectedSeekBarAfterPlay = 119
+            val actualSeekBarAfterPlay = seekBar.progress
+            assertEquals(messageSeekBarAfterPlay, expectedSeekBarAfterPlay, actualSeekBarAfterPlay)
+
+            stopButton.clickAndRun()
+            // total time elapsed = 0 milliseconds
+
+            val messageCurrentTimeAfterStop =
+                "The currentTimeTv should reset the playing time of the song after" +
+                        " clicking stopButton"
+            val expectedCurrentTimeAfterStop = "00:00"
+            val actualCurrentTimeAfterStop =  currentTimeTv.text.toString()
+            assertEquals(messageCurrentTimeAfterStop, expectedCurrentTimeAfterStop, actualCurrentTimeAfterStop)
+
+            val messageSeekBarAfterStop =
+                "The seekBar position should reset the current position of the song after" +
+                        " clicking stopButton"
+            val expectedSeekBarAfterStop = 0
+            val actualSeekBarAfterStop = seekBar.progress
+            assertEquals(messageSeekBarAfterStop, expectedSeekBarAfterStop, actualSeekBarAfterStop)
+
+            val messageTotalTimeAfterMinute =
+                "The totalTimeTv should not change the total time of the song after clicking stopButton"
+            val expectedTotalTimeAfterMinute = "03:30"
+            val actualTotalTimeAfterMinute =  totalTimeTv.text.toString()
+            assertEquals(
+                messageTotalTimeAfterMinute,
+                expectedTotalTimeAfterMinute,
+                actualTotalTimeAfterMinute
+            )
+
+            playPauseButton.clickAndRun(2_100)
+            // total time elapsed = 2_100 milliseconds
+
+            val messageCurrentTimePlayAfterStop =
+                "The currentTimeTv should display the current time of the song after" +
+                        " clicking playPauseButton after the song was stopped"
+            val expectedCurrentTimePlayAfterStop = "00:02"
+            val actualCurrentTimePlayAfterStop =  currentTimeTv.text.toString()
+            assertEquals(
+                messageCurrentTimePlayAfterStop,
+                expectedCurrentTimePlayAfterStop,
+                actualCurrentTimePlayAfterStop
+            )
+
+            val messageSeekBarPlayAfterStop =
+                "The seekBar position should reset the current position of the song after" +
+                        " clicking stopButton"
+            val expectedSeekBarPlayAfterStop = 2
+            val actualSeekBarPlayAfterStop = seekBar.progress
+            assertEquals(
+                messageSeekBarPlayAfterStop,
+                expectedSeekBarPlayAfterStop,
+                actualSeekBarPlayAfterStop
+            )
+        }
 
     }
 
