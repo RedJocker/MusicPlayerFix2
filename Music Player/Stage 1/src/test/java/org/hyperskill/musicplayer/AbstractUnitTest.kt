@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.media.MediaPlayer
 import android.view.View
+import android.widget.SeekBar
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.robolectric.Robolectric
@@ -105,5 +106,31 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
     protected fun View.clickAndRun(millis: Long = 500){
         this.performClick()
         shadowLooper.idleFor(Duration.ofMillis(millis))
+    }
+
+    /**
+     * Use this method to set the progress as a user.
+     *
+     * Will trigger attached listeners.
+     *
+     * First onStartTrackingTouch(), then onProgressChanged() as user, and finally onStopTrackingTouch()
+     */
+    protected fun SeekBar.setProgressAsUser(progress: Int) {
+        val shadowSeekBar = shadowOf(this)
+        shadowSeekBar.onSeekBarChangeListener.onStartTrackingTouch(this)
+
+        // using java reflection to change progress without triggering listener
+        var clazz = this::class.java  // may be subclass of SeekBar
+        while(clazz.name != "android.widget.ProgressBar") {  // since SeekBar is a subclass of ProgressBar this should not be an infinite loop
+            clazz = clazz.superclass as Class<out SeekBar>
+        }
+        val progressBarClazz = clazz
+        val progressField = progressBarClazz.getDeclaredField("mProgress")
+        progressField.isAccessible = true
+        progressField.setInt(this, progress)
+        //
+
+        shadowSeekBar.onSeekBarChangeListener.onProgressChanged(this, progress, true)
+        shadowSeekBar.onSeekBarChangeListener.onStopTrackingTouch(this)
     }
 }
