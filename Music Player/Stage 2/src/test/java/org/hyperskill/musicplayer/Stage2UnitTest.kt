@@ -7,8 +7,11 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowSeekBar
 import java.time.Duration
+
 
 
 @RunWith(RobolectricTestRunner::class)
@@ -57,6 +60,10 @@ class Stage2UnitTest : AbstractUnitTest<MainActivity>(MainActivity::class.java){
         assertEquals("Incorrect max progress value for seekBar", 210, view.max)
         assertEquals("Incorrect initial progress value for seekBar", 0, view.progress)
         view
+    }
+
+    private val shadowSeekBar: ShadowSeekBar by lazy {
+        shadowOf(seekBar)
     }
 
     @Test
@@ -380,7 +387,230 @@ class Stage2UnitTest : AbstractUnitTest<MainActivity>(MainActivity::class.java){
     }
 
     @Test
-    fun checkStateAfterSeekBarTrackingTouch() {
+    fun checkStateAfterSeekBarChangeDuringPlay() {
+        testActivity {
+            player
+            currentTimeTv
+            seekBar
+            playPauseButton
+            shadowSeekBar
+            totalTimeTv
 
+            playPauseButton.clickAndRun(30_100)
+            // total time elapsed = 30_100 milliseconds
+
+            val messageCurrentTimeAfterPlay =
+                "The currentTimeTv should display the playing time of the song after" +
+                        " clicking playPauseButton"
+            val expectedCurrentTimeAfterPlay = "00:30"
+            val actualCurrentTimeAfterPlay =  currentTimeTv.text.toString()
+            assertEquals(messageCurrentTimeAfterPlay, expectedCurrentTimeAfterPlay, actualCurrentTimeAfterPlay)
+
+            val messageSeekBarAfterPlay =
+                "The seekBar position should track the current position of the song after" +
+                        " clicking playPauseButton"
+            val expectedSeekBarAfterPlay = 30
+            val actualSeekBarAfterPlay = seekBar.progress
+            assertEquals(messageSeekBarAfterPlay, expectedSeekBarAfterPlay, actualSeekBarAfterPlay)
+
+            seekBar.setProgressAsUser(120)
+            shadowLooper.idleFor(Duration.ofMillis(10_100))
+            // total time elapsed = 130_100 millis
+
+            val messagePlayerPlayingAfterSeekBarChange =
+                "The player should remain playing after user changes the seekBar position if it was playing"
+            val expectedPlayerPlayingAfterSeekBarChange = true
+            val actualPlayerPlayingAfterSeekBarChange = player.isPlaying
+            assertEquals(
+                messagePlayerPlayingAfterSeekBarChange,
+                expectedPlayerPlayingAfterSeekBarChange,
+                actualPlayerPlayingAfterSeekBarChange
+            )
+
+            val messagePlayerPositionAfterSeekBarChange =
+                "The player should change the  current position after user changes the seekBar position"
+            val expectedPlayerPositionAfterSeekBarChange = 130100
+            val actualPlayerPositionAfterSeekBarChange = player.currentPosition
+            assertEquals(
+                messagePlayerPositionAfterSeekBarChange,
+                expectedPlayerPositionAfterSeekBarChange,
+                actualPlayerPositionAfterSeekBarChange
+            )
+
+            val messageCurrentTimeAfterSeekbarChange =
+                "The currentTimeTv should keep tracking the current time of the song after" +
+                        " user changes the seekBar position"
+            val expectedCurrentTimeAfterSeekBarChange = "02:10"
+            val actualCurrentTimeAfterSeekBarChange =  currentTimeTv.text.toString()
+            assertEquals(
+                messageCurrentTimeAfterSeekbarChange,
+                expectedCurrentTimeAfterSeekBarChange,
+                actualCurrentTimeAfterSeekBarChange
+            )
+
+            val messageSeekBarAfterSeekBarChange =
+                "The seekBar position should keep tracking the current position of the song after" +
+                        " user changes the seekBar position"
+            val expectedSeekBarAfterSeekBarChange = 130
+            val actualSeekBarAfterSeekBarChange = seekBar.progress
+            assertEquals(messageSeekBarAfterSeekBarChange, expectedSeekBarAfterSeekBarChange, actualSeekBarAfterSeekBarChange)
+
+
+            val messageTotalTimeAfterSeekBarChange =
+                "The totalTimeTv should not change the total time of the song after" +
+                        " user changes the seekBar position"
+            val expectedTotalTimeAfterSeekBarChange = "03:30"
+            val actualTotalTimeAfterSeekBarChange =  totalTimeTv.text.toString()
+            assertEquals(
+                messageTotalTimeAfterSeekBarChange,
+                expectedTotalTimeAfterSeekBarChange,
+                actualTotalTimeAfterSeekBarChange
+            )
+        }
     }
+
+    @Test
+    fun checkStateAfterSeekBarChangeDuringStop() {
+        testActivity {
+            player
+            currentTimeTv
+            totalTimeTv
+            seekBar
+            playPauseButton
+            stopButton
+            shadowSeekBar
+
+            playPauseButton.clickAndRun(40_100)
+            // total time elapsed = 40_100 milliseconds
+
+            val messageCurrentTimeAfterPlay =
+                "The currentTimeTv should display the playing time of the song after" +
+                        " clicking playPauseButton"
+            val expectedCurrentTimeAfterPlay = "00:40"
+            val actualCurrentTimeAfterPlay =  currentTimeTv.text.toString()
+            assertEquals(
+                messageCurrentTimeAfterPlay,
+                expectedCurrentTimeAfterPlay,
+                actualCurrentTimeAfterPlay
+            )
+
+            val messageSeekBarAfterPlay =
+                "The seekBar position should track the current position of the song after" +
+                        " clicking playPauseButton"
+            val expectedSeekBarAfterPlay = 40
+            val actualSeekBarAfterPlay = seekBar.progress
+            assertEquals(messageSeekBarAfterPlay, expectedSeekBarAfterPlay, actualSeekBarAfterPlay)
+
+            stopButton.clickAndRun(0)
+            seekBar.setProgressAsUser(120)
+            shadowLooper.idleFor(Duration.ofMillis(10_100))
+            // total time elapsed = 120_000 millis
+
+            val messagePlayerStoppedAfterStopSeekBarChange =
+                "The player should remain stopped after user changes the seekBar position if it was stopped"
+            val expectedPlayerStoppedAfterStopSeekBarChange = false
+            val actualPlayerStoppedAfterStopSeekBarChange = player.isPlaying
+            assertEquals(
+                messagePlayerStoppedAfterStopSeekBarChange,
+                expectedPlayerStoppedAfterStopSeekBarChange,
+                actualPlayerStoppedAfterStopSeekBarChange
+            )
+
+            val messagePlayerPositionAfterStopSeekBarChange =
+                "The player should change the  current position after user changes the seekBar position"
+            val expectedPlayerPositionAfterStopSeekBarChange = 120_000
+            val actualPlayerPositionAfterStopSeekBarChange = player.currentPosition
+            assertEquals(
+                messagePlayerPositionAfterStopSeekBarChange,
+                expectedPlayerPositionAfterStopSeekBarChange,
+                actualPlayerPositionAfterStopSeekBarChange
+            )
+
+
+            val messageCurrentTimeAfterStopSeekbarChange =
+                "The currentTimeTv should keep tracking the current time of the song after" +
+                        " user changes the seekBar position"
+            val expectedCurrentTimeAfterStopSeekBarChange = "02:00"
+            val actualCurrentTimeAfterStopSeekBarChange =  currentTimeTv.text.toString()
+            assertEquals(
+                messageCurrentTimeAfterStopSeekbarChange,
+                expectedCurrentTimeAfterStopSeekBarChange,
+                actualCurrentTimeAfterStopSeekBarChange
+            )
+
+            val messageSeekBarAfterSeekBarChange =
+                "The seekBar position should keep tracking the current position of the song after" +
+                        " user changes the seekBar position"
+            val expectedSeekBarAfterSeekBarChange = 120
+            val actualSeekBarAfterSeekBarChange = seekBar.progress
+            assertEquals(
+                messageSeekBarAfterSeekBarChange,
+                expectedSeekBarAfterSeekBarChange,
+                actualSeekBarAfterSeekBarChange
+            )
+
+            val messageTotalTimeAfterSeekBarChange =
+                "The totalTimeTv should not change the total time of the song after" +
+                        " user changes the seekBar position"
+            val expectedTotalTimeAfterSeekBarChange = "03:30"
+            val actualTotalTimeAfterSeekBarChange =  totalTimeTv.text.toString()
+            assertEquals(
+                messageTotalTimeAfterSeekBarChange,
+                expectedTotalTimeAfterSeekBarChange,
+                actualTotalTimeAfterSeekBarChange
+            )
+
+            playPauseButton.clickAndRun(10_100)
+            // total time elapsed = 130_100 millis
+
+            val messagePlayerPlayingAfterPlayAgain =
+                "The player should play again after click on playPauseButton if it was stopped"
+            val expectedPlayerPlayingAfterPlayAgain = true
+            val actualPlayerPlayingAfterPlayAgain = player.isPlaying
+            assertEquals(
+                messagePlayerPlayingAfterPlayAgain,
+                expectedPlayerPlayingAfterPlayAgain,
+                actualPlayerPlayingAfterPlayAgain
+            )
+
+            val messagePlayerPositionAfterPlayAgain =
+                "The player should change the current position after user changes the seekBar position"
+            val expectedPlayerPositionAfterPlayAgain = 130_100
+            val actualPlayerPositionAfterPlayAgain = player.currentPosition
+            assertEquals(
+                messagePlayerPositionAfterPlayAgain,
+                expectedPlayerPositionAfterPlayAgain,
+                actualPlayerPositionAfterPlayAgain
+            )
+
+            val messageCurrentTimeAfterPlayAgain =
+                "The currentTimeTv should keep tracking the current time of the song after" +
+                        " user changes the seekBar position"
+            val expectedCurrentTimeAfterPlayAgain = "02:10"
+            val actualCurrentTimeAfterPlayAgain =  currentTimeTv.text.toString()
+            assertEquals(
+                messageCurrentTimeAfterPlayAgain,
+                expectedCurrentTimeAfterPlayAgain,
+                actualCurrentTimeAfterPlayAgain
+            )
+
+            val messageSeekBarAfterPlayAgain =
+                "The seekBar position should keep tracking the current position of the song after" +
+                        " user changes the seekBar position"
+            val expectedSeekBarAfterPlayAgain = 130
+            val actualSeekBarAfterPlayAgain = seekBar.progress
+            assertEquals(
+                messageSeekBarAfterPlayAgain,
+                expectedSeekBarAfterPlayAgain,
+                actualSeekBarAfterPlayAgain
+            )
+        }
+    }
+
+
+    @Test
+    fun checkStateAfterSeekBarChangeBeforePlaying() {}
+
+    @Test
+    fun checkStateAfterSeekBarChangeAfterMusicEnd() {}
 }

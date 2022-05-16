@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity(), MusicPlayable {
     super.onCreate(savedInstanceState)
     setContentView(binding.root)
 
+
     player = MediaPlayer.create(this, R.raw.wisdom)
     timer = Timer(player, ::onTimerTick , ::onTimerStop)
 
@@ -53,15 +54,22 @@ class MainActivity : AppCompatActivity(), MusicPlayable {
       seekBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
           if(fromUser) {
+            println("fromUser onProgressChanged()")
             binding.currentTimeTv.text = Timer.timeString(progress * 1000)
-          }
+          } // else {
+//            println("not fromUser onProgressChanged()")
+//          }
         }
         override fun onStartTrackingTouch(seekBar: SeekBar?) {
+          println("onStartTrackingTouch")
           timer.pause()
         }
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
+          println("onStopTrackingTouch")
           player.seekTo(seekBar!!.progress * 1000)
-          timer.start()
+          if(player.isPlaying) {
+            timer.start()
+          }
         }
       })
 
