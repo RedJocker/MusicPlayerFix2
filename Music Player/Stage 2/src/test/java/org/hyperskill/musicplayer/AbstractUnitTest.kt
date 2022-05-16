@@ -1,6 +1,7 @@
 package org.hyperskill.musicplayer
 
 import android.app.Activity
+import android.content.Intent
 import android.media.MediaPlayer
 import android.view.View
 import org.junit.Assert.assertNotNull
@@ -23,11 +24,7 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
 
     protected val activity : Activity by lazy {
         CustomMediaPlayerShadow.setCreateListener(::onMediaPlayerCreated)
-        try {
-            activityController.setup().get()
-        } catch (ex: Exception) {
-            throw AssertionError("Exception, test failed on activity creation with $ex\n${ex.stackTraceToString()}")
-        }
+        activityController.get()
     }
 
     protected val shadowActivity: ShadowActivity by lazy {
@@ -63,12 +60,17 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
     /**
      * Decorate your test code with this method to ensure better error messages displayed
      * when tests are run with check button and exceptions are thrown by user implementation.
-     *
-     * Returns the result of the last expression on the code block for convenience
      */
-    fun testActivity(testCodeBlock: () -> Unit) {
+    fun testActivity(arguments: Intent = Intent(), testCodeBlock: (Activity) -> Unit) {
         try {
-            testCodeBlock()
+            activity.intent =  arguments
+            activityController.setup()
+        } catch (ex: Exception) {
+            throw AssertionError("Exception, test failed on activity creation with $ex\n${ex.stackTraceToString()}")
+        }
+
+        try {
+            testCodeBlock(activity)
         } catch (ex: Exception) {
             throw AssertionError("Exception. Test failed on activity execution with $ex\n${ex.stackTraceToString()}")
         }
