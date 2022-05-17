@@ -16,9 +16,15 @@ files:
   visible: false
 - name: src/androidTest/java/org/hyperskill/musicplayer/AndroidEduTestRunner.kt
   visible: false
-- name: src/androidTest/java/org/hyperskill/musicplayer/ExampleInstrumentedTest.kt
-  visible: false
 - name: src/androidTest/java/org/hyperskill/musicplayer/Stage1Test.kt
   visible: false
 - name: src/main/java/org/hyperskill/musicplayer/MainActivity.kt
+  visible: true
+- name: src/test/java/org/hyperskill/musicplayer/Stage1UnitTest.kt
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/CustomMediaPlayerShadow.java
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/AbstractUnitTest.kt
+  visible: false
+- name: src/main/java/org/hyperskill/musicplayer/Player.kt
   visible: true
