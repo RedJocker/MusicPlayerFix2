@@ -144,7 +144,7 @@ class Stage1UnitTest : AbstractUnitTest<MainActivity>(MainActivity::class.java){
             stopButton.clickAndRun()
 
             val messageAfterStopClick =
-                "The MediaPlayer should be playing after click on stopButton"
+                "The MediaPlayer should stop playing after click on stopButton"
             val expectedAfterStopClick = false
             val actualAfterStopClick = player.isPlaying
             assertEquals(messageAfterStopClick, expectedAfterStopClick, actualAfterStopClick)
