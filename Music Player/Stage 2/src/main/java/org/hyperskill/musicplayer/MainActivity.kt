@@ -65,17 +65,18 @@ class MainActivity : AppCompatActivity(), MusicPlayable {
           timer.pause()
         }
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
-          println("onStopTrackingTouch")
-          player.seekTo(seekBar!!.progress * 1000)
+          player.seekTo(binding.seekBar.progress * 1000)
           if(player.isPlaying) {
             timer.start()
           }
+          println("onStopTrackingTouch, currentPosition: ${player.currentPosition}")
         }
       })
 
       player.setOnCompletionListener {
         it.seekTo(0)
-        println("onCompletionListener, isPlaying:" + it.isPlaying)
+        it.prepare()
+        println("onCompletionListener, isPlaying: ${it.isPlaying}, currentPosition: ${it.currentPosition}")
         timer.stop()
       }
     }
@@ -95,9 +96,9 @@ class MainActivity : AppCompatActivity(), MusicPlayable {
   private fun onTimerStop() {
     runOnUiThread {
       timer.apply {
-        println("onTimerStop, timeTotalSeconds(): ${timeTotalSeconds()}, timeString: ${timeString()}")
         binding.seekBar.progress = 0
         binding.currentTimeTv.text = "00:00"
+        println("onTimerStop, timeTotalSeconds(): ${timeTotalSeconds()}, timeString: ${timeString()}")
       }
     }
   }
