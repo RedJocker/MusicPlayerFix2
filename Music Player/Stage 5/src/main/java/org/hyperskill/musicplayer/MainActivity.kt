@@ -82,18 +82,21 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+
     seekBar = findViewById(R.id.seekbar)
     totalTimeView = findViewById(R.id.total_time_view)
     currentTimeView = findViewById(R.id.current_time_view)
     playPauseButton = findViewById(R.id.play_pause_button)
     searchButton = findViewById(R.id.search_button)
     songListView = findViewById(R.id.song_list)
-    playlistDataBaseHelper = PlaylistsDataBaseHelper(this)
+
     searchButton = findViewById(R.id.search_button)
     createPlaylistButton = findViewById(R.id.create_button)
     playlistsButton = findViewById(R.id.playlists_button)
     playlistName = findViewById(R.id.playlist_name)
     backButton = findViewById(R.id.back_button)
+
+    playlistDataBaseHelper = PlaylistsDataBaseHelper(this)
     dataBase = playlistDataBaseHelper.writableDatabase
     switchButtonsBar(ButtonBar().onCreate)
     askWritePermission()

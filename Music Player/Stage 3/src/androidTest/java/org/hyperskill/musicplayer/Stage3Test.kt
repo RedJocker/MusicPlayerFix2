@@ -30,7 +30,7 @@ class Stage3Test: AbstractUnitTest<MainActivity>(MainActivity::class.java) {
     @Test
     fun checkIsSearchButtonExist() {
         val message = "Is search_button exist?"
-        assertNotNull(message, find(R.id.search_button))
+        assertNotNull(message, find(R.id.searchButton))
     }
 
     @Test
@@ -43,7 +43,7 @@ class Stage3Test: AbstractUnitTest<MainActivity>(MainActivity::class.java) {
     @Test
     fun checkHowMuchFilesProgramSee() {
         val message = "Is program see all three files"
-        onView(withId(R.id.search_button)).perform(click())
+        onView(withId(R.id.searchButton)).perform(click())
         assertEquals(message, 3, activity.songList.size)
     }
 
@@ -51,13 +51,13 @@ class Stage3Test: AbstractUnitTest<MainActivity>(MainActivity::class.java) {
     fun checkDoesProgramSeeMusic() {
         val message = "Does search_button place all fragments on the screen?"
         val message2 = "Does song fragments displaying song title and artist?"
-        onView(withId(R.id.search_button)).perform(click())
+        onView(withId(R.id.searchButton)).perform(click())
         for (i in 0..activity.songList.lastIndex) {
-            assertNotNull(message2, find<LinearLayout>(R.id.song_list).getChildAt(i))
+            assertNotNull(message2, find<LinearLayout>(R.id.songList).getChildAt(i))
         }
         for (i in 0..activity.songList.lastIndex) {
-            assertNotNull(message, find<LinearLayout>(R.id.song_list).getChildAt(i).findViewById(R.id.song_title))
-            assertNotNull(message, find<LinearLayout>(R.id.song_list).getChildAt(i).findViewById(R.id.song_artist))
+            assertNotNull(message, find<LinearLayout>(R.id.songList).getChildAt(i).findViewById(R.id.songTitleTv))
+            assertNotNull(message, find<LinearLayout>(R.id.songList).getChildAt(i).findViewById(R.id.songArtistTv))
         }
     }
 }

@@ -8,31 +8,36 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 
-class SongFragment(title: String, artist: String, id: Long, position: Int,
-                   activity: MainActivity
+class SongFragment(
+    private val title: String,
+    private val artist: String,
+    private val id: Long,
+    private val position: Int,
+    private val activity: MainActivity
 ) : Fragment() {
-    val mTitle = title
-    val mArtist = artist
-    val mId = id
-    var positionInList = position
-    val mActivity = activity
-    var titleView: TextView? = null
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_song, container, false)
-    }
+        val view = inflater.inflate(R.layout.fragment_song, container, false)
 
-    override fun onStart() {
-        super.onStart()
-        val view = view
         if (view != null) {
-            titleView = view.findViewById(R.id.song_title)
-            titleView?.text = mTitle
-            val artistView = view.findViewById<TextView>(R.id.song_artist)
-            artistView.text = mArtist
-            val playButton = view.findViewById<ImageButton>(R.id.song_status)
+            val titleView = view.findViewById<TextView>(R.id.songTitleTv)
+            val artistView = view.findViewById<TextView>(R.id.songArtistTv)
+            val playButton = view.findViewById<ImageButton>(R.id.songStatusImgBtn)
+
+            titleView?.text = title
+            artistView.text = artist
+            playButton.setOnClickListener {
+                println("Fragment playButton clicked for " +
+                        "id: $id, position: $position, title: $title, artist: $artist"
+                )
+            }
         }
+
+        return view
     }
 }

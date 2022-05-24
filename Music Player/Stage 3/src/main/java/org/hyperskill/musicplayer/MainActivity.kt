@@ -4,6 +4,7 @@ import android.Manifest
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.Button
 import android.widget.SeekBar
 import android.widget.TextView
@@ -17,98 +18,153 @@ class MainActivity : AppCompatActivity() {
   lateinit var totalTimeView: TextView
   lateinit var searchButton: Button
   lateinit var playPauseButton: Button
-  data class Song(val title: String, val artist: String, val id: Long)
-  val songFragmentList = mutableListOf<SongFragment>()
+  lateinit var stopButton: Button
+
+  data class Song(val title: String, val artist: String, val id: Long, val duration: Long)
+
   val songList = mutableListOf<Song>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+    askPermission()
+    bindViews()
+
     player = MediaPlayer.create(this, R.raw.wisdom)
-    seekBar = findViewById(R.id.seekbar)
-    totalTimeView = findViewById(R.id.total_time_view)
-    currentTimeView = findViewById(R.id.current_time_view)
-    timer = Timer(seekBar, player, currentTimeView)
-    totalTimeView.text = timer.calcTime(player.duration)
-    searchButton = findViewById(R.id.search_button)
-    playPauseButton = findViewById(R.id.play_pause_button)
-    askWritePermission()
+    timer = Timer(player, ::onTimerTick, ::onTimerStop)
+    totalTimeView.text = Timer.timeString(player.duration)
+    seekBar.max = player.duration / 1000
+
+    initListeners()
+  }
+
+  private fun bindViews() {
+    seekBar = findViewById(R.id.seekBar)
+    totalTimeView = findViewById(R.id.totalTimeTv)
+    currentTimeView = findViewById(R.id.currentTimeTv)
+    searchButton = findViewById(R.id.searchButton)
+    playPauseButton = findViewById(R.id.playPauseButton)
+    stopButton = findViewById(R.id.stopButton)
+
+  }
+
+  private fun initListeners() {
     playPauseButton.setOnClickListener {
       if (player.isPlaying) {
         player.pause()
-        timer.stop()
+        timer.pause()
+        println("playPause, paused")
       } else {
         player.start()
         timer.start()
+        println("playPause, playing")
       }
     }
-    val stopButton = findViewById<Button>(R.id.stop_button)
+
     stopButton.setOnClickListener {
+      player.seekTo(0)
       player.stop()
-      timer.reset()
+      player.prepare()
+      timer.stop()
     }
+
     seekBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
-      override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+      override fun onProgressChanged(s: SeekBar?, progress: Int, fromUser: Boolean) {
         if(fromUser) {
-          currentTimeView.text = timer.calcTime(progress * 1000)
+          println("fromUser onProgressChanged()")
+          currentTimeView.text = Timer.timeString(progress * 1000)
+        } // else {
+//            println("not fromUser onProgressChanged()")
+//          }
+      }
+      override fun onStartTrackingTouch(s: SeekBar?) {
+        println("onStartTrackingTouch")
+        timer.pause()
+      }
+      override fun onStopTrackingTouch(s: SeekBar?) {
+        player.seekTo(seekBar.progress * 1000)
+        if(player.isPlaying) {
+          timer.start()
         }
-      }
-      override fun onStartTrackingTouch(seekBar: SeekBar?) {
-        timer.stop()
-      }
-      override fun onStopTrackingTouch(seekBar: SeekBar?) {
-        player.seekTo(seekBar!!.progress * 1000)
-        timer.start()
+        println("onStopTrackingTouch, currentPosition: ${player.currentPosition}")
       }
     })
+
+    player.setOnCompletionListener {
+      it.seekTo(0)
+      it.stop()
+      it.prepare()
+      println("onCompletionListener, isPlaying: ${it.isPlaying}, currentPosition: ${it.currentPosition}")
+      timer.stop()
+    }
+
     searchButton.setOnClickListener {
       updateSongListFromStorage()
       placeSongFragmentsOnScreen(songList)
     }
-    seekBar.max = player.duration / 1000
-    timer.runTracker()
-
   }
+
   private fun updateSongListFromStorage() {
+    songList.clear()
     val musicResolver = contentResolver
-    val musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+    val musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+
     val musicCursor = musicResolver.query(musicUri, null, null,
       null, null, null)
-    if (musicCursor != null && musicCursor.moveToFirst()) {
-      val titleColumn = musicCursor.getColumnIndex(
-        android.provider.MediaStore.Audio.Media.TITLE)
-      val artistColumn = musicCursor.getColumnIndex(
-        android.provider.MediaStore.Audio.Media.ARTIST)
-      val idColumn = musicCursor.getColumnIndex(
-        android.provider.MediaStore.Audio.Media._ID)
-      do {
-        val title = musicCursor.getString(titleColumn)
-        val artist = musicCursor.getString(artistColumn)
-        val id = musicCursor.getLong(idColumn)
-        songList.add(Song(title, artist, id))
-      } while (musicCursor.moveToNext())
+
+    musicCursor?.use {
+      if (it.moveToFirst()) {
+        val titleColumn = it.getColumnIndex(MediaStore.Audio.Media.TITLE)
+        val artistColumn = it.getColumnIndex(MediaStore.Audio.Media.ARTIST)
+        val idColumn = it.getColumnIndex(MediaStore.Audio.Media._ID)
+        val durationColumn = it.getColumnIndex(MediaStore.Audio.Media.DURATION)
+
+        do {
+          val title = it.getString(titleColumn)
+          val artist = it.getString(artistColumn)
+          val id = it.getLong(idColumn)
+          val duration  = it.getLong(durationColumn)
+          songList.add(Song(title, artist, id, duration))
+        } while (it.moveToNext())
+      }
     }
-    musicCursor?.close()
   }
+
   private fun placeSongFragmentsOnScreen(songList: MutableList<Song>) {
-    val tr = supportFragmentManager.beginTransaction()
-    for (i in songList) {
-      tr.add(
-        R.id.song_list, SongFragment(
-          i.title, i.artist, i.id, songList.indexOf(i), this
-        )
-      )
-      songFragmentList.add(
-        SongFragment(i.title, i.artist, i.id, songList.indexOf(i), this)
-      )
+    val fragmentTransaction = supportFragmentManager.beginTransaction()
+    for ((i, song) in songList.withIndex()) {
+      val songFragment = SongFragment(song.title, song.artist, song.id, i, this)
+      fragmentTransaction.add(R.id.songList, songFragment)
     }
-    tr.commit()
+
+    fragmentTransaction.commit()
   }
-  private fun askWritePermission() {
+
+  private fun askPermission() {
     ActivityCompat.requestPermissions(this,
       arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE),
       101)
+  }
+
+  private fun onTimerTick() {
+    runOnUiThread {
+      timer.apply {
+        println("onTimerTick, timeTotalSeconds(): ${timeTotalSeconds()}, timeString: ${timeString()}, player.currentPosition: ${player.currentPosition}")
+        seekBar.progress = timeTotalSeconds()
+        currentTimeView.text = timeString()
+      }
+    }
+  }
+
+  private fun onTimerStop() {
+    runOnUiThread {
+      timer.apply {
+        seekBar.progress = 0
+        currentTimeView.text = "00:00"
+        println("onTimerStop, timeTotalSeconds(): ${timeTotalSeconds()}, timeString: ${timeString()}")
+      }
+    }
   }
 }
