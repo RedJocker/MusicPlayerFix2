@@ -12,7 +12,7 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(shadows = [CustomMediaPlayerShadow::class])
-class Stage1UnitTest : AbstractUnitTest<MainActivity>(MainActivity::class.java){
+class Stage1UnitTestB : AbstractUnitTest<MainActivity>(MainActivity::class.java){
 
     private val playPauseButton: Button by lazy {
         activity.findViewByString("playPauseButton")

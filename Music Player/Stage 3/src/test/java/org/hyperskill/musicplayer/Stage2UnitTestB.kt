@@ -1,7 +1,6 @@
 package org.hyperskill.musicplayer
 
 import android.widget.Button
-import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
 import org.junit.Assert.assertEquals
@@ -15,7 +14,7 @@ import java.time.Duration
 
 @RunWith(RobolectricTestRunner::class)
 @Config(shadows = [CustomMediaPlayerShadow::class])
-class Stage2UnitTest : AbstractUnitTest<MainActivity>(MainActivity::class.java){
+class Stage2UnitTestB : AbstractUnitTest<MainActivity>(MainActivity::class.java){
 
     private val playPauseButton: Button by lazy {
         activity.findViewByString("playPauseButton")
