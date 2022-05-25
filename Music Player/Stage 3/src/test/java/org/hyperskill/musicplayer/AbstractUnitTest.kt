@@ -97,6 +97,25 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
     }
 
     /**
+     * Use this method to find views.
+     *
+     * The view existence will be assert before being returned
+     */
+    inline fun <reified T> View.findViewByString(idString: String): T {
+        val id = this.resources.getIdentifier(idString, "id", context.packageName)
+        val view: View? = this.findViewById(id)
+
+        val idNotFoundMessage = "View with id \"$idString\" was not found"
+        val wrongClassMessage = "View with id \"$idString\" is not from expected class. " +
+                "Expected ${T::class.java.simpleName} found ${view?.javaClass?.simpleName}"
+
+        assertNotNull(idNotFoundMessage, view)
+        assertTrue(wrongClassMessage, view is T)
+
+        return view as T
+    }
+
+    /**
      * Use this method to perform clicks. It will also advance the clock millis milliseconds and run
      * enqueued Runnable scheduled to run on main looper in that timeframe.
      * Default value for millis is 500

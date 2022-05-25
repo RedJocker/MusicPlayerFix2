@@ -26,3 +26,11 @@ files:
   visible: true
 - name: src/main/java/org/hyperskill/musicplayer/Timer.kt
   visible: true
+- name: src/test/java/org/hyperskill/musicplayer/Stage3UnitTest.kt
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/FakeContentProvider.kt
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/Song.kt
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/FakeSongRepository.kt
+  visible: false
