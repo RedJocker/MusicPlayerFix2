@@ -1,6 +1,6 @@
 package org.hyperskill.musicplayer
 
-data class Song(
+data class SongFake(
     val id: String,
     val artist: String,
     val title: String,

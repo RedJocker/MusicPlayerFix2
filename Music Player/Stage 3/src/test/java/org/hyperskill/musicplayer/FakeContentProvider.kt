@@ -10,7 +10,7 @@ import android.provider.MediaStore
 class FakeContentProvider : ContentProvider() {
 
     companion object {
-        var fakeSongResult: List<Song> = listOf()
+        var fakeSongResult: List<SongFake> = listOf()
     }
 
     override fun onCreate(): Boolean {

@@ -3,85 +3,85 @@ package org.hyperskill.musicplayer
 object FakeSongRepository {
 
     val fakeSongData = listOf(
-        Song(
+        SongFake(
             "1",
             "Fake Artists Are Fake",
             "Faking til you make it",
             350
         ),
-        Song(
+        SongFake(
             "2",
             "Fake Artists Are Fake",
             "Faking it again",
             225
         ),
-        Song(
+        SongFake(
             "3",
             "Fake Artists Are Fake",
             "How long are you gonna fake it",
             381
         ),
-        Song(
+        SongFake(
             "4",
             "Fake Artists Are Fake",
             "Fast faking",
             283
         ),
-        Song(
+        SongFake(
             "5",
             "Fake Artists Are Fake",
             "I'm going to fake you",
             350
         ),
-        Song(
+        SongFake(
             "6",
             "Fake Artists Are Fake",
             "Faking it good",
             400
         ),
-        Song(
+        SongFake(
             "7",
             "Fake Artists Are Fake",
             "Fake city",
             600
         ),
-        Song(
+        SongFake(
             "8",
             "Fake Artists Are Fake",
             "I can't keep on faking",
             317
         ),
-        Song(
+        SongFake(
             "9",
             "The Fakers",
             "Whole new fake",
             288
         ),
-        Song(
+        SongFake(
             "10",
             "The Fakers",
             "Fake Holidays",
             421
         ),
-        Song(
+        SongFake(
             "11",
             "The Fakers",
             "Don't mock me up u faker",
             310
         ),
-        Song(
+        SongFake(
             "12",
             "Fkexxx",
             "Xfaking",
         800
         ),
-        Song(
+        SongFake(
             "13",
             "Fkexxx",
             "Lucid fake",
             720
         ),
-        Song(
+        SongFake(
             "14",
             "Fake Artists Are Fake ft. Fkexxx",
             "Fast faking (Nocturnal mix)",

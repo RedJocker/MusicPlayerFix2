@@ -7,15 +7,16 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
-import androidx.core.view.get
 import androidx.core.view.size
+import androidx.recyclerview.widget.RecyclerView
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-
+import java.lang.AssertionError
 
 
 @RunWith(RobolectricTestRunner::class)
@@ -83,14 +84,24 @@ class Stage3UnitTest : AbstractUnitTest<MainActivity>(MainActivity::class.java){
 
         testActivity {
             searchButton.clickAndRun()
-            val linearLayout = activity.findViewByString<LinearLayout>("songList")
-            assertEquals("Incorrect number of list items", 14, linearLayout.size)
+            val songList = activity.findViewByString<RecyclerView>("songList")
+
+            assertNotNull("Your recycler view adapter should not be null", songList.adapter)
+
+            val expectedSize = 14
+            val actualSize = songList.adapter!!.itemCount
+            assertEquals("Incorrect number of list items", expectedSize, actualSize)
+
+            val firstItemViewHolder = songList.findViewHolderForAdapterPosition(0)
+                ?: throw AssertionError("No item is being displayed on songList RecyclerView, is it big enough to display one item?")
+
+            // setting height to ensure that all items are inflated
+            songList.layout(0,0, songList.width, firstItemViewHolder.itemView.height * 15)
 
             for((i, song) in FakeSongRepository.fakeSongData.withIndex()) {
-                val listItem = linearLayout[i]
+                val listItem = songList.findViewHolderForAdapterPosition(i)!!.itemView
                 val songTitleTv: TextView = listItem.findViewByString("songTitleTv")
                 val songArtistTv: TextView = listItem.findViewByString("songArtistTv")
-//                val songStatusImgBtn: TextView = listItem.findViewByString("songStatusImgBtn")
                 val actualSongTitle = songTitleTv.text.toString()
                 assertEquals("songTitleTv with incorrect text", actualSongTitle, song.title)
                 val actualSongArtist = songArtistTv.text.toString()
@@ -110,8 +121,13 @@ class Stage3UnitTest : AbstractUnitTest<MainActivity>(MainActivity::class.java){
 
         testActivity {
             searchButton.clickAndRun()
-            val linearLayout = activity.findViewByString<LinearLayout>("songList")
-            assertEquals("Incorrect number of list items", 0, linearLayout.size)
+            val songList = activity.findViewByString<RecyclerView>("songList")
+
+            assertNotNull("Your recycler view adapter should not be null", songList.adapter)
+
+            val expectedSize = 0
+            val actualSize = songList.adapter!!.itemCount
+            assertEquals("Incorrect number of list items", expectedSize, actualSize)
         }
     }
 

@@ -5,10 +5,12 @@ import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import android.widget.Button
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
   lateinit var player: MediaPlayer
@@ -19,21 +21,21 @@ class MainActivity : AppCompatActivity() {
   lateinit var searchButton: Button
   lateinit var playPauseButton: Button
   lateinit var stopButton: Button
+  lateinit var songListView: RecyclerView
 
-  data class Song(val title: String, val artist: String, val id: Long, val duration: Long)
 
-  val songList = mutableListOf<Song>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    askPermission()
+    askPermission(this)
     bindViews()
 
     player = MediaPlayer.create(this, R.raw.wisdom)
     timer = Timer(player, ::onTimerTick, ::onTimerStop)
     totalTimeView.text = Timer.timeString(player.duration)
     seekBar.max = player.duration / 1000
+    songListView.adapter = SongRecyclerViewAdapter(listOf())
 
     initListeners()
   }
@@ -45,7 +47,7 @@ class MainActivity : AppCompatActivity() {
     searchButton = findViewById(R.id.searchButton)
     playPauseButton = findViewById(R.id.playPauseButton)
     stopButton = findViewById(R.id.stopButton)
-
+    songListView = findViewById(R.id.songList)
   }
 
   private fun initListeners() {
@@ -98,55 +100,13 @@ class MainActivity : AppCompatActivity() {
       timer.stop()
     }
 
-    searchButton.setOnClickListener {
-      updateSongListFromStorage()
-      placeSongFragmentsOnScreen(songList)
-    }
+    searchButton.setOnClickListener(::refreshSongListView)
   }
 
-  private fun updateSongListFromStorage() {
-    songList.clear()
-    val musicResolver = contentResolver
-    val musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-
-    val musicCursor = musicResolver.query(musicUri, null, null,
-      null, null, null)
-
-    musicCursor?.use {
-      if (it.moveToFirst()) {
-        val titleColumn = it.getColumnIndex(MediaStore.Audio.Media.TITLE)
-        val artistColumn = it.getColumnIndex(MediaStore.Audio.Media.ARTIST)
-        val idColumn = it.getColumnIndex(MediaStore.Audio.Media._ID)
-        val durationColumn = it.getColumnIndex(MediaStore.Audio.Media.DURATION)
-
-        do {
-          val title = it.getString(titleColumn)
-          val artist = it.getString(artistColumn)
-          val id = it.getLong(idColumn)
-          val duration  = it.getLong(durationColumn)
-          songList.add(Song(title, artist, id, duration))
-        } while (it.moveToNext())
-      }
-    }
+  private fun refreshSongListView(v: View) {
+    songListView.adapter = SongRecyclerViewAdapter(getSongList(contentResolver))
   }
 
-  private fun placeSongFragmentsOnScreen(songList: MutableList<Song>) {
-    val fragmentTransaction = supportFragmentManager.beginTransaction()
-    for ((i, song) in songList.withIndex()) {
-      val songFragment = SongFragment(song.title, song.artist, song.id, i, this)
-      fragmentTransaction.add(R.id.songList, songFragment)
-    }
-
-    fragmentTransaction.commit()
-  }
-
-  private fun askPermission() {
-    ActivityCompat.requestPermissions(this,
-      arrayOf(
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE),
-      101)
-  }
 
   private fun onTimerTick() {
     runOnUiThread {

@@ -6,34 +6,30 @@ xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:orientation="vertical">
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-    <Button
-        android:id="@+id/searchButton"
-        android:layout_width="0dp"
-        android:layout_weight="9"
-        android:layout_height="wrap_content"
-        android:text="Search"
-        android:layout_margin="8dp"/>
-  </LinearLayout>
 
-  <ScrollView
-      android:layout_height="0dp"
-      android:layout_weight="1"
+  <Button
+      android:id="@+id/searchButton"
       android:layout_width="match_parent"
-      tools:context=".MainActivity">
-    <LinearLayout
-        android:id="@+id/songList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-    </LinearLayout>
-  </ScrollView>
+      android:layout_weight="0"
+      android:layout_height="wrap_content"
+      android:text="Search"
+      android:layout_margin="8dp"/>
+
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/songList"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="100"
+      android:orientation="vertical">
+  </androidx.recyclerview.widget.RecyclerView>
+
   <LinearLayout
       android:id="@+id/controllerBar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_weight="0"
       android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"

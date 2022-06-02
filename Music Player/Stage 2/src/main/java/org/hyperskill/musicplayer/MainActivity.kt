@@ -1,10 +1,9 @@
 package org.hyperskill.musicplayer
 
-import android.annotation.SuppressLint
+
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.SystemClock
 import android.widget.SeekBar
 import org.hyperskill.musicplayer.databinding.ActivityMainBinding
 
@@ -100,6 +99,7 @@ class MainActivity : AppCompatActivity(), MusicPlayable {
         binding.currentTimeTv.text = "00:00"
         println("onTimerStop, timeTotalSeconds(): ${timeTotalSeconds()}, timeString: ${timeString()}")
       }
+      
     }
   }
 }

@@ -12,8 +12,6 @@ files:
   visible: true
 - name: src/main/res/layout/activity_main.xml
   visible: true
-- name: src/main/res/layout/fragment_song.xml
-  visible: true
 - name: src/androidTest/java/org/hyperskill/musicplayer/AbstractTest.kt
   visible: false
 - name: src/androidTest/java/org/hyperskill/musicplayer/AndroidEduTestRunner.kt
@@ -22,15 +20,23 @@ files:
   visible: false
 - name: src/main/java/org/hyperskill/musicplayer/MainActivity.kt
   visible: true
-- name: src/main/java/org/hyperskill/musicplayer/SongFragment.kt
-  visible: true
 - name: src/main/java/org/hyperskill/musicplayer/Timer.kt
   visible: true
 - name: src/test/java/org/hyperskill/musicplayer/Stage3UnitTest.kt
   visible: false
 - name: src/test/java/org/hyperskill/musicplayer/FakeContentProvider.kt
   visible: false
-- name: src/test/java/org/hyperskill/musicplayer/Song.kt
+- name: src/test/java/org/hyperskill/musicplayer/SongFake.kt
   visible: false
 - name: src/test/java/org/hyperskill/musicplayer/FakeSongRepository.kt
   visible: false
+- name: src/main/res/layout/list_item_song.xml
+  visible: true
+- name: src/main/java/org/hyperskill/musicplayer/SongRecyclerViewAdapter.kt
+  visible: true
+- name: src/main/java/org/hyperskill/musicplayer/Song.kt
+  visible: true
+- name: src/main/java/org/hyperskill/musicplayer/SongDataHandler.kt
+  visible: true
+- name: src/main/java/org/hyperskill/musicplayer/PermissionsHandler.kt
+  visible: true
