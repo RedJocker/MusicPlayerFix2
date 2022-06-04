@@ -1,15 +1,19 @@
 package org.hyperskill.musicplayer
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.media.MediaPlayer
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
+import androidx.core.content.PermissionChecker
 import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
@@ -28,7 +32,6 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    askPermission(this)
     bindViews()
 
     player = MediaPlayer.create(this, R.raw.wisdom)
@@ -98,13 +101,18 @@ class MainActivity : AppCompatActivity() {
       it.prepare()
       println("onCompletionListener, isPlaying: ${it.isPlaying}, currentPosition: ${it.currentPosition}")
       timer.stop()
+
     }
 
     searchButton.setOnClickListener(::refreshSongListView)
   }
 
   private fun refreshSongListView(v: View) {
-    songListView.adapter = SongRecyclerViewAdapter(getSongList(contentResolver))
+    if(hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+      songListView.adapter = SongRecyclerViewAdapter(getSongList(contentResolver))
+    } else {
+      askPermission()
+    }
   }
 
 
@@ -124,6 +132,27 @@ class MainActivity : AppCompatActivity() {
         seekBar.progress = 0
         currentTimeView.text = "00:00"
         println("onTimerStop, timeTotalSeconds(): ${timeTotalSeconds()}, timeString: ${timeString()}")
+      }
+    }
+  }
+
+  override fun onRequestPermissionsResult(
+    code: Int,
+    permissions: Array<out String>,
+    grantResults: IntArray
+  ) {
+    super.onRequestPermissionsResult(code, permissions, grantResults)
+
+    if(code == requestCode) {
+      grantResults.forEachIndexed { index: Int, result: Int ->
+        if (result == PackageManager.PERMISSION_GRANTED) {
+          Log.d("PermissionRequest", "${permissions[index]} granted")
+          if(permissions[index] == Manifest.permission.READ_EXTERNAL_STORAGE) {
+            searchButton.callOnClick()
+          }
+        } else {
+          Log.d("PermissionRequest", "${permissions[index]} denied")
+        }
       }
     }
   }

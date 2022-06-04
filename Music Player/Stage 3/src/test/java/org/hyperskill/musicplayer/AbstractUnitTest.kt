@@ -5,6 +5,7 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.view.View
 import android.widget.SeekBar
+import org.junit.Assert
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.robolectric.Robolectric
@@ -151,5 +152,33 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
 
         shadowSeekBar.onSeekBarChangeListener.onProgressChanged(this, progress, true)
         shadowSeekBar.onSeekBarChangeListener.onStopTrackingTouch(this)
+    }
+
+    /**
+     * Use this method to make assertions on requisition of permissions
+     *
+     * @param permissionsRequired list of requiredPermission, ex: listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+     * @param expectedRequestCode requestCode that test expect implementation to use in their code
+     */
+    fun assertRequestPermissions(permissionsRequired: List<String>, expectedRequestCode: Int = 1){
+
+        val messageAnyPermissionRequest = "Have you asked any permissions?"
+        val permissionRequest = shadowActivity.lastRequestedPermission ?: throw java.lang.AssertionError(
+            messageAnyPermissionRequest
+        )
+
+        permissionsRequired.forEach { permissionRequired: String ->
+
+            val messagePermissionRequired = "Have you asked permission $permissionRequired"
+
+            val hasRequestedPermission =
+                permissionRequest.requestedPermissions.any { it == permissionRequired }
+            assert(hasRequestedPermission) { messagePermissionRequired }
+
+            val actualRequestCode = permissionRequest.requestCode
+            val messageWrongRequestCode =
+                "Did you use the requestCode stated on description while requiring permissions?"
+            Assert.assertEquals(messageWrongRequestCode, expectedRequestCode, actualRequestCode)
+        }
     }
 }
