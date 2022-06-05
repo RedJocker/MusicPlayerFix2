@@ -2,20 +2,17 @@ package org.hyperskill.musicplayer
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.content.pm.ProviderInfo
-import android.provider.MediaStore
 import android.widget.Button
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import org.hyperskill.musicplayer.internals.*
+import org.hyperskill.musicplayer.internals.CustomMediaPlayerShadow
+import org.hyperskill.musicplayer.internals.FakeSongRepository
+import org.hyperskill.musicplayer.internals.MusicPlayerUnitTest
+import org.hyperskill.musicplayer.internals.SongFake
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import java.lang.AssertionError
 
 
 @RunWith(RobolectricTestRunner::class)
@@ -154,38 +151,4 @@ class Stage3UnitTest : MusicPlayerUnitTest<MainActivity>(MainActivity::class.jav
         }
     }
 
-    private fun setupContentProvider(fakeSongResult: List<SongFake>){
-        val info = ProviderInfo().apply {
-            authority = MediaStore.AUTHORITY
-        }
-        Robolectric.buildContentProvider(FakeContentProvider::class.java).create(info)
-        FakeContentProvider.fakeSongResult = fakeSongResult
-    }
-
-    private fun RecyclerView.assertItems(fakeSongResult: List<SongFake>) {
-        assertNotNull("Your recycler view adapter should not be null", this.adapter)
-
-        val expectedSize = fakeSongResult.size
-
-        val actualSize = this.adapter!!.itemCount
-        assertEquals("Incorrect number of list items", expectedSize, actualSize)
-
-        if(expectedSize > 0) {
-            val firstItemViewHolder = this.findViewHolderForAdapterPosition(0)
-                ?: throw AssertionError("No item is being displayed on songList RecyclerView, is it big enough to display one item?")
-
-            // setting height to ensure that all items are inflated
-            this.layout(0,0, this.width, firstItemViewHolder.itemView.height * (expectedSize + 1))
-
-            for((i, song) in fakeSongResult.withIndex()) {
-                val listItem = this.findViewHolderForAdapterPosition(i)!!.itemView
-                val songTitleTv: TextView = listItem.findViewByString("songTitleTv")
-                val songArtistTv: TextView = listItem.findViewByString("songArtistTv")
-                val actualSongTitle = songTitleTv.text.toString()
-                assertEquals("songTitleTv with incorrect text", actualSongTitle, song.title)
-                val actualSongArtist = songArtistTv.text.toString()
-                assertEquals("songArtistTv with incorrect text", actualSongArtist, song.artist)
-            }
-        }
-    }
 }
