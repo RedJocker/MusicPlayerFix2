@@ -22,13 +22,11 @@ files:
   visible: true
 - name: src/main/java/org/hyperskill/musicplayer/Timer.kt
   visible: true
+- name: src/test/java/org/hyperskill/musicplayer/Stage1UnitTestB.kt
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/Stage2UnitTestB.kt
+  visible: false
 - name: src/test/java/org/hyperskill/musicplayer/Stage3UnitTest.kt
-  visible: false
-- name: src/test/java/org/hyperskill/musicplayer/FakeContentProvider.kt
-  visible: false
-- name: src/test/java/org/hyperskill/musicplayer/SongFake.kt
-  visible: false
-- name: src/test/java/org/hyperskill/musicplayer/FakeSongRepository.kt
   visible: false
 - name: src/main/res/layout/list_item_song.xml
   visible: true
@@ -40,3 +38,17 @@ files:
   visible: true
 - name: src/main/java/org/hyperskill/musicplayer/PermissionsHandler.kt
   visible: true
+- name: src/test/java/org/hyperskill/musicplayer/internals/AbstractUnitTest.kt
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/internals/CustomMediaPlayerShadow.java
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/internals/SongFake.kt
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/internals/MusicPlayerUnitTest.kt
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/internals/FakeSongRepository.kt
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/internals/FakeContentProvider.kt
+  visible: false
+
+
