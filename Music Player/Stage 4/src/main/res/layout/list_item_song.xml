@@ -18,11 +18,21 @@
         android:layout_height="wrap_content"
         android:text="Guggenheim grotto"
         android:layout_below="@id/songTitleTv"
-        android:layout_toEndOf="@id/songStatusImgBtn"/>
+        android:layout_toEndOf="@id/songStatusImgBtn"
+        android:layout_toStartOf="@id/songDurationTv"
+        />
     <ImageButton
         android:id="@+id/songStatusImgBtn"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/ic_action_play"
         android:contentDescription="song_status"/>
+
+    <TextView
+        android:id="@+id/songDurationTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/songTitleTv"
+        android:layout_alignParentEnd="true"
+        android:text="00:00"/>
 </RelativeLayout>

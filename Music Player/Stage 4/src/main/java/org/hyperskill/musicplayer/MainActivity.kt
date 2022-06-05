@@ -26,7 +26,6 @@ class MainActivity : AppCompatActivity() {
   lateinit var songListView: RecyclerView
 
 
-  var playerIsEmpty = true
   var currentSongStatusButton: ImageButton? = null
   var currentPlayingSongPosition: Int? = null
 
@@ -34,7 +33,7 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    println("onCreate stage4")
+//    println("onCreate stage4")
 
     bindViews()
     setInitialState()
@@ -46,7 +45,7 @@ class MainActivity : AppCompatActivity() {
     timer = Timer(player, ::onTimerTick, ::onTimerStop)
     totalTimeView.text = Timer.timeString(player.duration)
     seekBar.max = player.duration / 1000
-    songListView.adapter = SongRecyclerViewAdapter(this, listOf())
+    songListView.adapter = SongRecyclerViewAdapter(listOf(), ::onListItemClick)
   }
 
   private fun bindViews() {
@@ -61,24 +60,9 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun initListeners() {
-    playPauseButton.setOnClickListener {
-      if (player.isPlaying) {
-        player.pause()
-        timer.pause()
-        println("playPause, paused")
-      } else {
-        player.start()
-        timer.start()
-        println("playPause, playing")
-      }
-    }
+    playPauseButton.setOnClickListener(::playPause)
 
-    stopButton.setOnClickListener {
-      player.seekTo(0)
-      player.stop()
-      player.prepare()
-      timer.stop()
-    }
+    stopButton.setOnClickListener(::stop)
 
     seekBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
       override fun onProgressChanged(s: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -102,79 +86,78 @@ class MainActivity : AppCompatActivity() {
       }
     })
 
-    player.setOnCompletionListener {
-      it.seekTo(0)
-      it.stop()
-      it.prepare()
-      println("onCompletionListener, isPlaying: ${it.isPlaying}, currentPosition: ${it.currentPosition}")
-      timer.stop()
-    }
+    player.setOnCompletionListener(::onCompletionListener)
 
     searchButton.setOnClickListener(::refreshSongListView)
   }
 
-  private fun playNewSong(context: MainActivity) {
-    if (!playerIsEmpty) {
-      player.stop()
-      player.reset()
-      timer.stop()
+  private fun playPause(playPauseButton: View = this.playPauseButton) {
+    if (player.isPlaying) {
+      player.pause()
+      timer.pause()
+      println("playPause, paused")
+      currentSongStatusButton?.setImageResource(R.drawable.ic_action_play)
+    } else {
+      player.start()
+      timer.start()
+      println("playPause, playing")
+      currentSongStatusButton?.setImageResource(R.drawable.ic_action_pause)
     }
-
-    val currentSongResourceId = getSongListFromStorage(contentResolver)[currentPlayingSongPosition!!].id
-    val trackUri = ContentUris.withAppendedId(
-      android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, currentSongResourceId)
-    player = MediaPlayer.create(context, trackUri)
-//    player.setOnCompletionListener(this)
-    player.start()
-    println("playing new: ${player.isPlaying}")
-    playerIsEmpty = false
-    context.seekBar.max = player.duration / 1000
-    timer = Timer(player, ::onTimerTick, ::onTimerStop)
-    context.totalTimeView.text = Timer.timeString(player.duration)
-    timer.start()
   }
 
-  fun onPlayPauseSongButtonClick(songPositionInList: Int, activity: MainActivity,
-                                 status: ImageButton
-  ) {
-    if (playerIsEmpty) {
-      currentSongStatusButton = status
+  private fun onCompletionListener(mediaPlayer: MediaPlayer) {
+    stop()
+  }
+
+  private fun playNewSong(songId: Long) {
+    if (player.isPlaying) {
+      stop()
     }
+
+    val trackUri = ContentUris.withAppendedId(
+      android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songId)
+
+    player = MediaPlayer.create(this, trackUri)
+    player.setOnCompletionListener(::onCompletionListener)
+    timer = Timer(player, ::onTimerTick, ::onTimerStop)
+    seekBar.max = player.duration / 1000
+    totalTimeView.text = Timer.timeString(player.duration)
+
+    playPause()
+    println("playing new: ${player.isPlaying}")
+
+  }
+
+  private fun onListItemClick(songPositionInList: Int, status: ImageButton, songId: Long) {
     if (currentPlayingSongPosition != songPositionInList) {
-      currentSongStatusButton!!.setImageResource(R.drawable.ic_action_play)
-      currentPlayingSongPosition = songPositionInList
+      currentSongStatusButton?.setImageResource(R.drawable.ic_action_play)
       status.setImageResource(R.drawable.ic_action_pause)
 
-      playNewSong(activity)
-    } else if (player.isPlaying) {
-      status.setImageResource(R.drawable.ic_action_play)
-//      playPauseButton.setImageResource(R.drawable.ic_action_play)
-      pause()
+      currentSongStatusButton = status
+      currentPlayingSongPosition = songPositionInList
+
+      playNewSong(songId)
     } else {
-      status.setImageResource(R.drawable.ic_action_pause)
-//      playPauseButton.setImageResource(R.drawable.ic_action_pause)
-      resume()
+      playPause()
     }
   }
 
   private fun refreshSongListView(v: View) {
     if(hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-      songListView.adapter = SongRecyclerViewAdapter(this, getSongListFromStorage(contentResolver))
+      songListView.adapter = SongRecyclerViewAdapter(getSongListFromStorage(contentResolver), ::onListItemClick)
     } else {
       askPermission()
     }
   }
 
-  private fun pause() {
-    player.pause()
-    println("paused: ${player.isPlaying}")
+  private fun stop(stopButton: View = this.stopButton) {
+    player.seekTo(0)
+    player.stop()
+    player.prepare()
     timer.stop()
+    currentSongStatusButton?.setImageResource(R.drawable.ic_action_play)
   }
-  private fun resume() {
-    player.start()
-    println("resumed: ${player.isPlaying}")
-    timer.start()
-  }
+
 
   private fun onTimerTick() {
     runOnUiThread {

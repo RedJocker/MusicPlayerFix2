@@ -8,7 +8,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class SongRecyclerViewAdapter(
-    private val activity: MainActivity, private val songList: List<Song>) : RecyclerView.Adapter<SongRecyclerViewAdapter.SongViewHolder>() {
+    private val songList: List<Song>,
+    private val onListItemClick: (position: Int, button: ImageButton, songId: Long) -> Unit)
+    : RecyclerView.Adapter<SongRecyclerViewAdapter.SongViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
@@ -21,10 +23,11 @@ class SongRecyclerViewAdapter(
         val song = songList[position]
         holder.itemView.findViewById<TextView>(R.id.songTitleTv).text = song.title
         holder.itemView.findViewById<TextView>(R.id.songArtistTv).text = song.artist
+        holder.itemView.findViewById<TextView>(R.id.songDurationTv).text = Timer.timeString(song.duration.toInt())
         val songStatusImgBtn = holder.itemView.findViewById<ImageButton>(R.id.songStatusImgBtn)
 
         songStatusImgBtn.setOnClickListener {
-            activity.onPlayPauseSongButtonClick(position, activity, songStatusImgBtn)
+            onListItemClick(position, songStatusImgBtn, song.id)
         }
     }
 
