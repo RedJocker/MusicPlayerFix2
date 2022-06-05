@@ -64,15 +64,15 @@ class FakeContentProvider : ContentProvider() {
     }
 
     override fun getType(uri: Uri): String? {
-        TODO("Not yet implemented")
+        throw NotImplementedError()
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
-        TODO("Not yet implemented")
+        throw NotImplementedError()
     }
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
-        TODO("Not yet implemented")
+        throw NotImplementedError()
     }
 
     override fun update(
@@ -81,6 +81,6 @@ class FakeContentProvider : ContentProvider() {
         selection: String?,
         selectionArgs: Array<out String>?
     ): Int {
-        TODO("Not yet implemented")
+        throw NotImplementedError()
     }
 }
