@@ -14,10 +14,11 @@ import org.robolectric.shadows.util.DataSource;
 @Implements(MediaPlayer.class)
 public class CustomMediaPlayerShadow extends ShadowMediaPlayer {
 
+    private static int fakeSongDuration = 210_000;
+
     @Implementation
     public static MediaPlayer create(Context context, int resid){
         DataSource ds = DataSource.toDataSource(String.valueOf(resid));
-        final int fakeSongDuration=  210_000;
         addMediaInfo(ds, new ShadowMediaPlayer.MediaInfo(fakeSongDuration, 0));
 
         MediaPlayer mp = new MediaPlayer();
@@ -30,5 +31,9 @@ public class CustomMediaPlayerShadow extends ShadowMediaPlayer {
             return null;
         }
         return mp;
+    }
+
+    public static void setFakeSongDuration(int fakeSongDuration) {
+        CustomMediaPlayerShadow.fakeSongDuration = fakeSongDuration;
     }
 }
