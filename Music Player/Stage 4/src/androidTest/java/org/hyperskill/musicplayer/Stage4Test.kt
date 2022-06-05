@@ -31,13 +31,13 @@ class Stage4Test: AbstractUnitTest<MainActivity>(MainActivity::class.java) {
     @Test
     fun checkIsSearchButtonExist() {
         val message = "Is search_button exists?"
-        assertNotNull(message, find(R.id.search_button))
+        assertNotNull(message, find(R.id.searchButton))
     }
 
     @Test
     fun checkAreThreeStatusButtonsExist() {
         val message = "Are all three song fragments displayed on screen after searching?"
-        onView(withId(R.id.search_button)).perform(click())
+        onView(withId(R.id.searchButton)).perform(click())
         for(i in 0..2) {
             assertNotNull(
                 message,
@@ -50,40 +50,40 @@ class Stage4Test: AbstractUnitTest<MainActivity>(MainActivity::class.java) {
     @Test
     fun checkIsCurrentTimeViewExist() {
         val message = "Is current_time_view exists?"
-        assertNotNull(message, find(R.id.current_time_view))
+        assertNotNull(message, find(R.id.currentTimeTv))
     }
 
     @Test
     fun checkIsStatusButtonRunMusic() {
         val titleList = listOf<String>("music1", "music2", "music3")
-        onView(withId(R.id.search_button)).perform(click())
+        onView(withId(R.id.searchButton)).perform(click())
         for(i in 0..2) {
             onView(withContentDescription(titleList[i])).perform(click())
             Thread.sleep(4000)
             assertEquals(
                 "Current time should be in 3..5, but it was " +
-                        "${find<TextView>(R.id.current_time_view).text.toString()[4]}",
+                        "${find<TextView>(R.id.currentTimeTv).text.toString()[4]}",
                 true,
-                find<TextView>(R.id.current_time_view).text.toString()[4].toChar() in '3'..'5')
+                find<TextView>(R.id.currentTimeTv).text.toString()[4].toChar() in '3'..'5')
             Thread.sleep(1000)
             assertEquals(
                 "Current time should be in 4..6, but it was " +
-                        "${find<TextView>(R.id.current_time_view).text.toString()[4]}",
+                        "${find<TextView>(R.id.currentTimeTv).text.toString()[4]}",
                 true,
-                find<TextView>(R.id.current_time_view).text.toString()[4].toChar() in '4'..'6')
+                find<TextView>(R.id.currentTimeTv).text.toString()[4].toChar() in '4'..'6')
             Thread.sleep(1000)
             assertEquals(
                 "Current time should be in 5..7, but it was " +
-                        "${find<TextView>(R.id.current_time_view).text.toString()[4]}",
+                        "${find<TextView>(R.id.currentTimeTv).text.toString()[4]}",
                 true,
-                find<TextView>(R.id.current_time_view).text.toString()[4].toChar() in '5'..'7')
+                find<TextView>(R.id.currentTimeTv).text.toString()[4].toChar() in '5'..'7')
         }
     }
 
     @Test
     fun checkIsMusicPlayingWhenCollapsed() {
         val message = "Is music playing while app collapsed?"
-        onView(withId(R.id.search_button)).perform(click())
+        onView(withId(R.id.searchButton)).perform(click())
         onView(withContentDescription("music1")).perform(click())
         device = UiDevice.getInstance(getInstrumentation())
         device.pressHome()
@@ -93,7 +93,7 @@ class Stage4Test: AbstractUnitTest<MainActivity>(MainActivity::class.java) {
     @Test
     fun checkIsMusicPlayingInSleepMode() {
         val message = "Is music playing while device in sleep mode?"
-        onView(withId(R.id.search_button)).perform(click())
+        onView(withId(R.id.searchButton)).perform(click())
         onView(withContentDescription("music1")).perform(click())
         device = UiDevice.getInstance(getInstrumentation())
         device.sleep()

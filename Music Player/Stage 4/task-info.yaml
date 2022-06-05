@@ -12,17 +12,35 @@ files:
   visible: true
 - name: src/main/res/layout/activity_main.xml
   visible: true
-- name: src/main/res/layout/fragment_song.xml
+- name: src/main/res/layout/list_item_song.xml
   visible: true
-- name: src/androidTest/java/org/hyperskill/musicplayer/AbstractTest.kt
-  visible: false
-- name: src/androidTest/java/org/hyperskill/musicplayer/AndroidEduTestRunner.kt
-  visible: false
-- name: src/androidTest/java/org/hyperskill/musicplayer/Stage4Test.kt
-  visible: false
 - name: src/main/java/org/hyperskill/musicplayer/MainActivity.kt
-  visible: true
-- name: src/main/java/org/hyperskill/musicplayer/SongFragment.kt
   visible: true
 - name: src/main/java/org/hyperskill/musicplayer/Timer.kt
   visible: true
+- name: src/main/java/org/hyperskill/musicplayer/Song.kt
+  visible: true
+- name: src/main/java/org/hyperskill/musicplayer/SongDataHandler.kt
+  visible: true
+- name: src/main/java/org/hyperskill/musicplayer/SongRecyclerViewAdapter.kt
+  visible: true
+- name: src/main/java/org/hyperskill/musicplayer/PermissionsHandler.kt
+  visible: true
+- name: src/test/java/org/hyperskill/musicplayer/internals/AbstractUnitTest.kt
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/internals/CustomMediaPlayerShadow.java
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/internals/SongFake.kt
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/internals/MusicPlayerUnitTest.kt
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/internals/FakeSongRepository.kt
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/internals/FakeContentProvider.kt
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/Stage1UnitTestB.kt
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/Stage2UnitTestB.kt
+  visible: false
+- name: src/test/java/org/hyperskill/musicplayer/Stage3UnitTest.kt
+  visible: false
