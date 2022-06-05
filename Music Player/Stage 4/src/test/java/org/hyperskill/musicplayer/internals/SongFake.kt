@@ -4,5 +4,5 @@ data class SongFake(
     val id: String,
     val artist: String,
     val title: String,
-    val duration: Long
+    val duration: Int
 )

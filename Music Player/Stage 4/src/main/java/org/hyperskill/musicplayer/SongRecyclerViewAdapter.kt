@@ -24,7 +24,7 @@ class SongRecyclerViewAdapter(
         holder.itemView.findViewById<TextView>(R.id.songTitleTv).text = song.title
         holder.itemView.findViewById<TextView>(R.id.songArtistTv).text = song.artist
         holder.itemView.findViewById<TextView>(R.id.songDurationTv).text = Timer.timeString(song.duration.toInt())
-        val songStatusImgBtn = holder.itemView.findViewById<ImageButton>(R.id.songStatusImgBtn)
+        val songStatusImgBtn = holder.itemView.findViewById<ImageButton>(R.id.songItemPlayPauseImgBtn)
 
         songStatusImgBtn.setOnClickListener {
             onListItemClick(position, songStatusImgBtn, song.id)

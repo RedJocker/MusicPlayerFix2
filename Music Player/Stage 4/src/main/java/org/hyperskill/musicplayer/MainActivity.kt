@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity() {
   lateinit var stopButton: Button
   lateinit var songListView: RecyclerView
 
-
   var currentSongStatusButton: ImageButton? = null
   var currentPlayingSongPosition: Int? = null
 

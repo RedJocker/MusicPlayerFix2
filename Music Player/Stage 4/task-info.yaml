@@ -44,3 +44,5 @@ files:
   visible: false
 - name: src/test/java/org/hyperskill/musicplayer/Stage3UnitTest.kt
   visible: false
+- name: src/test/java/org/hyperskill/musicplayer/Stage4UnitTest.kt
+  visible: false
