@@ -1,4 +1,4 @@
-package org.hyperskill.musicplayer
+package org.hyperskill.musicplayer.internals
 
 object FakeSongRepository {
 

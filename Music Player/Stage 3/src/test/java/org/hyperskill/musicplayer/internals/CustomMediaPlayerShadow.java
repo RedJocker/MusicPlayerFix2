@@ -1,4 +1,4 @@
-package org.hyperskill.musicplayer;
+package org.hyperskill.musicplayer.internals;
 
 import static org.robolectric.shadows.ShadowMediaPlayer.State.INITIALIZED;
 

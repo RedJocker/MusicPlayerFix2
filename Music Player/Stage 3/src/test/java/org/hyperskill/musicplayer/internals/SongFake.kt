@@ -1,4 +1,4 @@
-package org.hyperskill.musicplayer
+package org.hyperskill.musicplayer.internals
 
 data class SongFake(
     val id: String,

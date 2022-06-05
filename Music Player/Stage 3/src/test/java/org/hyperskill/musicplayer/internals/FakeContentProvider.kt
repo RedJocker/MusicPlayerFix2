@@ -1,4 +1,4 @@
-package org.hyperskill.musicplayer
+package org.hyperskill.musicplayer.internals
 
 import android.content.ContentProvider
 import android.content.ContentValues

@@ -1,8 +1,7 @@
-package org.hyperskill.musicplayer
+package org.hyperskill.musicplayer.internals
 
 import android.app.Activity
 import android.content.Intent
-import android.media.MediaPlayer
 import android.view.View
 import android.widget.SeekBar
 import org.junit.Assert
@@ -14,7 +13,6 @@ import org.robolectric.android.controller.ActivityController
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowActivity
 import org.robolectric.shadows.ShadowLooper
-import org.robolectric.shadows.ShadowMediaPlayer
 import java.time.Duration
 
 @Config(shadows = [CustomMediaPlayerShadow::class])
@@ -25,7 +23,7 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
     }
 
     protected val activity : Activity by lazy {
-        CustomMediaPlayerShadow.setCreateListener(::onMediaPlayerCreated)
+
         activityController.get()
     }
 
@@ -37,27 +35,7 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
         shadowOf(activity.mainLooper)
     }
 
-    private var playerPrivate: MediaPlayer? = null
-    private var shadowPlayerPrivate: ShadowMediaPlayer? = null
 
-    protected var player: MediaPlayer
-        get() {
-            assertNotNull("No MediaPlayer was found", playerPrivate)
-            return this.playerPrivate!!
-        }
-        set(_) {}
-
-    protected var shadowPlayer: ShadowMediaPlayer
-        get() {
-            assertNotNull("No MediaPlayer was found", playerPrivate)
-            return this.shadowPlayerPrivate!!
-        }
-        set(_) {}
-
-    private fun onMediaPlayerCreated(player: MediaPlayer, shadow: ShadowMediaPlayer) {
-        playerPrivate = player
-        shadowPlayerPrivate = shadow
-    }
 
     /**
      * Decorate your test code with this method to ensure better error messages displayed

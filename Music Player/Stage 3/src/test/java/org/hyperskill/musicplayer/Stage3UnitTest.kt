@@ -5,9 +5,9 @@ import android.content.pm.PackageManager
 import android.content.pm.ProviderInfo
 import android.provider.MediaStore
 import android.widget.Button
-import android.widget.SeekBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import org.hyperskill.musicplayer.internals.*
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
@@ -20,7 +20,7 @@ import java.lang.AssertionError
 
 @RunWith(RobolectricTestRunner::class)
 @Config(shadows = [CustomMediaPlayerShadow::class])
-class Stage3UnitTest : AbstractUnitTest<MainActivity>(MainActivity::class.java){
+class Stage3UnitTest : MusicPlayerUnitTest<MainActivity>(MainActivity::class.java){
 
     private val searchButton: Button by lazy {
         val view = activity.findViewByString<Button>("searchButton")
