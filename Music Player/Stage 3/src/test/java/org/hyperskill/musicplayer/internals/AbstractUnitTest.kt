@@ -139,9 +139,9 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
         shadowSeekBar.onSeekBarChangeListener.onStartTrackingTouch(this)
 
         // using java reflection to change progress without triggering listener
-        var clazz = this::class.java  // may be subclass of SeekBar
+        var clazz: Class<*> = this::class.java  // may be subclass of SeekBar
         while(clazz.name != "android.widget.ProgressBar") {  // since SeekBar is a subclass of ProgressBar this should not be an infinite loop
-            clazz = clazz.superclass as Class<out SeekBar>
+            clazz = clazz.superclass as Class<*>
         }
         val progressBarClazz = clazz
         val progressField = progressBarClazz.getDeclaredField("mProgress")
