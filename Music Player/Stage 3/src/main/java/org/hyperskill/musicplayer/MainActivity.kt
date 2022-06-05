@@ -3,17 +3,13 @@ package org.hyperskill.musicplayer
 import android.Manifest
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.SeekBar
 import android.widget.TextView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.PermissionChecker
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
@@ -33,13 +29,7 @@ class MainActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
     bindViews()
-
-    player = MediaPlayer.create(this, R.raw.wisdom)
-    timer = Timer(player, ::onTimerTick, ::onTimerStop)
-    totalTimeView.text = Timer.timeString(player.duration)
-    seekBar.max = player.duration / 1000
-    songListView.adapter = SongRecyclerViewAdapter(listOf())
-
+    setInitialState()
     initListeners()
   }
 
@@ -51,6 +41,14 @@ class MainActivity : AppCompatActivity() {
     playPauseButton = findViewById(R.id.playPauseButton)
     stopButton = findViewById(R.id.stopButton)
     songListView = findViewById(R.id.songList)
+  }
+
+  private fun setInitialState() {
+    player = MediaPlayer.create(this, R.raw.wisdom)
+    timer = Timer(player, ::onTimerTick, ::onTimerStop)
+    totalTimeView.text = Timer.timeString(player.duration)
+    seekBar.max = player.duration / 1000
+    songListView.adapter = SongRecyclerViewAdapter(listOf())
   }
 
   private fun initListeners() {
@@ -101,7 +99,6 @@ class MainActivity : AppCompatActivity() {
       it.prepare()
       println("onCompletionListener, isPlaying: ${it.isPlaying}, currentPosition: ${it.currentPosition}")
       timer.stop()
-
     }
 
     searchButton.setOnClickListener(::refreshSongListView)
@@ -114,7 +111,6 @@ class MainActivity : AppCompatActivity() {
       askPermission()
     }
   }
-
 
   private fun onTimerTick() {
     runOnUiThread {
